@@ -422,9 +422,10 @@ window.PortfolioData = {
             ...DEFAULT_PORTFOLIO_DATA.socialHub,
             ...(parsed.socialHub || {})
           },
-          services: Array.isArray(parsed.services) && parsed.services.length > 0 ? parsed.services : DEFAULT_PORTFOLIO_DATA.services,
-          projects: Array.isArray(parsed.projects) && parsed.projects.length > 0 ? parsed.projects : DEFAULT_PORTFOLIO_DATA.projects,
-          skills: Array.isArray(parsed.skills) && parsed.skills.length > 0 ? parsed.skills : DEFAULT_PORTFOLIO_DATA.skills
+          services: Array.isArray(parsed.services) ? parsed.services : DEFAULT_PORTFOLIO_DATA.services,
+          projects: Array.isArray(parsed.projects) ? parsed.projects : DEFAULT_PORTFOLIO_DATA.projects,
+          skills: Array.isArray(parsed.skills) ? parsed.skills : DEFAULT_PORTFOLIO_DATA.skills,
+          testimonials: Array.isArray(parsed.testimonials) ? parsed.testimonials : (parsed.testimonials !== undefined ? [] : (DEFAULT_PORTFOLIO_DATA.testimonials || []))
         };
       }
     } catch (e) {
@@ -733,7 +734,45 @@ window.PortfolioData = {
     return true;
   },
 
-  // 6. 3D Theme System
+  // 6. Testimonials & Client Reviews
+  getTestimonials() {
+    return this.get().testimonials || [];
+  },
+
+  addTestimonial(testimonial) {
+    const data = this.get();
+    if (!Array.isArray(data.testimonials)) data.testimonials = [];
+    testimonial.id = testimonial.id || `test-${Date.now()}`;
+    data.testimonials.push(testimonial);
+    this.save(data);
+    return testimonial;
+  },
+
+  deleteTestimonial(id) {
+    const data = this.get();
+    if (Array.isArray(data.testimonials)) {
+      data.testimonials = data.testimonials.filter(t => t.id !== id);
+    }
+    this.save(data);
+    return true;
+  },
+
+  deleteProjectReview(projectId, reviewId) {
+    const data = this.get();
+    if (Array.isArray(data.projects)) {
+      const proj = data.projects.find(p => p.id === projectId);
+      if (proj && Array.isArray(proj.reviews)) {
+        proj.reviews = proj.reviews.filter(r => r.id !== reviewId);
+      }
+    }
+    if (Array.isArray(data.testimonials)) {
+      data.testimonials = data.testimonials.filter(t => t.id !== reviewId);
+    }
+    this.save(data);
+    return true;
+  },
+
+  // 7. 3D Theme System
   getActiveTheme() {
     return this.get().activeTheme || "cyber-dark";
   },

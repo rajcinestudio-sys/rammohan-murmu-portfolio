@@ -254,6 +254,27 @@ function applyActiveTheme(themeId) {
   document.body.setAttribute("data-theme", theme);
 }
 
+function updateSectionVisibility(sectionId, hasData, navHref) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.style.display = hasData ? "" : "none";
+  }
+  if (navHref) {
+    const links = document.querySelectorAll(`a[href="${navHref}"]`);
+    links.forEach(link => {
+      const parentLi = link.closest("li");
+      const dockBtn = link.classList.contains("dock-item") ? link : null;
+      if (parentLi) {
+        parentLi.style.display = hasData ? "" : "none";
+      } else if (dockBtn) {
+        dockBtn.style.display = hasData ? "" : "none";
+      } else {
+        link.style.display = hasData ? "" : "none";
+      }
+    });
+  }
+}
+
 function renderAllPortfolioContent() {
   if (!window.PortfolioData) return;
   const data = window.PortfolioData.get();
@@ -297,20 +318,52 @@ function renderAllPortfolioContent() {
     renderSocialLinks(p.socials, p.customSocials);
   }
 
-  // 2. Services
-  renderServices(data.services || []);
+  // 2. Services (Auto-hide if empty)
+  const servicesList = data.services || [];
+  updateSectionVisibility("services", servicesList.length > 0, "#services");
+  if (servicesList.length > 0) {
+    renderServices(servicesList);
+  }
 
-  // 3. Portfolio Categories, Subfilters & Projects
-  initPortfolioFilters(data.projects || []);
+  // 3. Portfolio Categories, Subfilters & Projects (Auto-hide if empty)
+  const projectsList = data.projects || [];
+  updateSectionVisibility("portfolio", projectsList.length > 0, "#portfolio");
+  if (projectsList.length > 0) {
+    initPortfolioFilters(projectsList);
+  }
 
   // 4. Hero Works 3D Slider
-  initHeroWorksSlider(data.projects || []);
+  initHeroWorksSlider(projectsList);
 
-  // 5. Skills
-  renderSkills(data.skills || []);
+  // 5. Skills (Auto-hide if empty)
+  const skillsList = data.skills || [];
+  updateSectionVisibility("skills", skillsList.length > 0, "#skills");
+  if (skillsList.length > 0) {
+    renderSkills(skillsList);
+  }
 
-  // 6. Testimonials
-  renderTestimonials(data.testimonials || []);
+  // 6. Testimonials & Client Reviews (Auto-hide if empty)
+  const projectReviews = (data.projects || []).flatMap(p => 
+    (p.reviews || []).map(r => ({
+      id: r.id,
+      name: r.userName || r.name || "Client",
+      role: r.projectTitle ? `Client (${r.projectTitle})` : (r.role || "Verified Client"),
+      comment: r.comment || r.text || "",
+      rating: r.rating || 5,
+      avatar: r.avatar || "assets/images/avatar.svg"
+    }))
+  );
+  const directTestimonials = Array.isArray(data.testimonials) ? data.testimonials : [];
+  const allReviews = [
+    ...directTestimonials,
+    ...projectReviews
+  ].filter(t => (t.comment && t.comment.trim().length > 0) || (t.text && t.text.trim().length > 0));
+
+  const hasReviews = allReviews.length > 0;
+  updateSectionVisibility("testimonials", hasReviews, "#testimonials");
+  if (hasReviews) {
+    renderTestimonials(allReviews);
+  }
 }
 
 function setText(id, text) {
@@ -790,12 +843,17 @@ let currentTestimonialSlide = 0;
 
 function renderTestimonials(testimonials) {
   const container = document.getElementById("testimonials-container");
+  const section = document.getElementById("testimonials");
   if (!container) return;
 
   if (!testimonials || testimonials.length === 0) {
-    container.innerHTML = `<p style="text-align: center; color: var(--text-dim); padding: 2rem 0;">No client reviews available yet.</p>`;
+    if (section) section.style.display = "none";
+    updateSectionVisibility("testimonials", false, "#testimonials");
     return;
   }
+
+  if (section) section.style.display = "";
+  updateSectionVisibility("testimonials", true, "#testimonials");
 
   container.innerHTML = `
     <div class="testimonials-slider-box" id="testimonials-slider-box">

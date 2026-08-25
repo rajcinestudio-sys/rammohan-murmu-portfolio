@@ -418,7 +418,16 @@ function loadDashboardData() {
   // 1. Stats
   const projects = data.projects || [];
   const services = data.services || [];
-  const allReviews = projects.flatMap(p => (p.reviews || []).map(r => ({ ...r, projectTitle: p.title, projectId: p.id })));
+  const projectReviews = projects.flatMap(p => (p.reviews || []).map(r => ({ ...r, projectTitle: p.title, projectId: p.id })));
+  const directTestimonials = (data.testimonials || []).map(t => ({
+    id: t.id,
+    userName: t.name,
+    comment: t.comment || t.text,
+    rating: t.rating || 5,
+    projectTitle: t.role || 'Featured Client',
+    projectId: 'testimonial'
+  }));
+  const allReviews = [...directTestimonials, ...projectReviews];
 
   document.getElementById("dash-total-projects").textContent = projects.length;
   document.getElementById("dash-services-count").textContent = services.length;
