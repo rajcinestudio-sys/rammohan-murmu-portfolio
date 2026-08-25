@@ -447,37 +447,29 @@
       </div>
 
       <div class="contact-wrapper">
-        <!-- Left Contact Info Cards -->
+        <!-- Left Contact Info Cards (WhatsApp, Call, Email) -->
         <div class="contact-info-cards">
-          <div class="contact-card-item">
+          <div class="contact-card-item" onclick="triggerDirectWhatsApp()" role="button" tabindex="0" title="Click to chat on WhatsApp">
             <div class="contact-card-icon wa">💬</div>
             <div class="contact-card-details">
               <h4>WhatsApp Instant Chat</h4>
-              <a href="https://wa.me/918250550060" target="_blank" rel="noopener" id="contact-wa-link">+91 8250550060</a>
+              <span id="contact-wa-link" style="color: var(--text-main); font-weight: 700; font-family: var(--font-heading); font-size: 1.15rem;">+91 8250550060</span>
             </div>
           </div>
 
-          <div class="contact-card-item">
+          <div class="contact-card-item" onclick="triggerDirectCall()" role="button" tabindex="0" title="Click to call directly">
             <div class="contact-card-icon">📞</div>
             <div class="contact-card-details">
               <h4>Direct Call / Phone</h4>
-              <a href="tel:8250550062" id="contact-phone-link">+91 8250550062</a>
+              <span id="contact-phone-link" style="color: var(--text-main); font-weight: 700; font-family: var(--font-heading); font-size: 1.15rem;">+91 8250550062</span>
             </div>
           </div>
 
-          <div class="contact-card-item">
+          <div class="contact-card-item" onclick="triggerDirectEmail()" role="button" tabindex="0" title="Click to send email inquiry">
             <div class="contact-card-icon">✉️</div>
             <div class="contact-card-details">
               <h4>Email Inquiry</h4>
-              <a href="mailto:rammohanmurmu0@gmail.com" id="contact-email-link">rammohanmurmu0@gmail.com</a>
-            </div>
-          </div>
-
-          <div class="contact-card-item">
-            <div class="contact-card-icon">📍</div>
-            <div class="contact-card-details">
-              <h4>Location &amp; Work Mode</h4>
-              <p id="contact-location-text">West Bengal, India • Remote Worldwide</p>
+              <span id="contact-email-link" style="color: var(--text-main); font-weight: 700; font-family: var(--font-heading); font-size: 1.15rem; word-break: break-all;">rammohanmurmu0@gmail.com</span>
             </div>
           </div>
         </div>

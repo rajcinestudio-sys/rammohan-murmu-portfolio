@@ -377,21 +377,11 @@ function renderServices(services) {
             `).join("")}
           </div>
         </div>
-
-        <div class="proficiency-section">
-          <div class="proficiency-header">
-            <span>Proficiency Level</span>
-            <span class="proficiency-number">${s.proficiency || 95}%</span>
-          </div>
-          <div class="proficiency-track">
-            <div class="proficiency-fill ${s.theme || 'gold'}" style="width: ${s.proficiency || 95}%;"></div>
-          </div>
-        </div>
       </div>
     `;
   }).join("");
 
-  // Initialize auto-sliding intervals for services with 2+ images
+  // Initialize auto-sliding intervals and touch/mouse swipe for services with 2+ images
   services.forEach((s, sIndex) => {
     const sId = s.id || sIndex;
     const images = Array.isArray(s.images) && s.images.length > 0 ? s.images : (s.image ? [s.image] : []);
@@ -400,9 +390,10 @@ function renderServices(services) {
       const slides = document.querySelectorAll(`.service-slide-${sId}`);
       const dotsContainer = document.getElementById(`service-dots-${sId}`);
       const dots = dotsContainer ? dotsContainer.querySelectorAll(".service-card-slider-dot") : [];
+      const bannerBox = document.getElementById(`service-banner-box-${sId}`);
 
-      const timer = setInterval(() => {
-        currentIndex = (currentIndex + 1) % images.length;
+      function updateServiceSlide(newIdx) {
+        currentIndex = newIdx;
         slides.forEach((sl, idx) => {
           if (idx === currentIndex) sl.classList.add("active");
           else sl.classList.remove("active");
@@ -411,8 +402,23 @@ function renderServices(services) {
           if (idx === currentIndex) dt.classList.add("active");
           else dt.classList.remove("active");
         });
-      }, 3500 + (sIndex * 400));
+      }
+
+      function nextServiceSlide() {
+        updateServiceSlide((currentIndex + 1) % images.length);
+      }
+
+      function prevServiceSlide() {
+        updateServiceSlide((currentIndex - 1 + images.length) % images.length);
+      }
+
+      const timer = setInterval(nextServiceSlide, 3500 + (sIndex * 400));
       serviceSliderTimers.push(timer);
+
+      // Attach Finger Touch & Mouse Drag to Slide
+      if (bannerBox) {
+        attachSwipeGesture(bannerBox, nextServiceSlide, prevServiceSlide);
+      }
     }
   });
 }
@@ -541,12 +547,13 @@ function renderProjects(projects) {
 }
 
 /* ==========================================================================
-   7. DYNAMIC HERO WORKS & 16:9 BANNER AUTO-SLIDER (DESKTOP & MOBILE)
+   7. DYNAMIC HERO WORKS & 16:9 BANNER AUTO-SLIDER (DESKTOP & MOBILE WITH TOUCH/MOUSE SWIPE)
    ========================================================================== */
 let heroSliderTimer = null;
 
 function initHeroWorksSlider(projects) {
   const desktopContainer = document.getElementById("hero-desktop-slides-wrapper");
+  const desktopCard = document.getElementById("hero-desktop-slider-card");
   const desktopDots = document.getElementById("hero-desktop-nav-dots");
   const mobileContainer = document.getElementById("hero-mobile-16x9-track");
   const mobileDots = document.getElementById("hero-mobile-nav-dots");
@@ -619,9 +626,25 @@ function initHeroWorksSlider(projects) {
     `).join("");
   }
 
+  function restartHeroTimer() {
+    if (heroSliderTimer) clearInterval(heroSliderTimer);
+    heroSliderTimer = setInterval(nextHeroSlide, 4500);
+  }
+
+  function nextHeroSlide() {
+    currentSlide = (currentSlide + 1) % slideItems.length;
+    updateHeroSlideVisuals(currentSlide, slideItems.length);
+  }
+
+  function prevHeroSlide() {
+    currentSlide = (currentSlide - 1 + slideItems.length) % slideItems.length;
+    updateHeroSlideVisuals(currentSlide, slideItems.length);
+  }
+
   window.goToHeroSlide = function(index) {
     currentSlide = index;
     updateHeroSlideVisuals(currentSlide, slideItems.length);
+    restartHeroTimer();
   };
 
   function updateHeroSlideVisuals(index, total) {
@@ -650,11 +673,87 @@ function initHeroWorksSlider(projects) {
     });
   }
 
-  if (heroSliderTimer) clearInterval(heroSliderTimer);
-  heroSliderTimer = setInterval(() => {
-    currentSlide = (currentSlide + 1) % slideItems.length;
-    updateHeroSlideVisuals(currentSlide, slideItems.length);
-  }, 4500);
+  // Touch Swipe & Mouse Drag on Mobile Track
+  if (mobileContainer) {
+    attachSwipeGesture(mobileContainer, () => {
+      nextHeroSlide();
+      restartHeroTimer();
+    }, () => {
+      prevHeroSlide();
+      restartHeroTimer();
+    });
+  }
+
+  // Touch Swipe & Mouse Drag on Desktop Card
+  const targetDesktop = desktopCard || desktopContainer;
+  if (targetDesktop) {
+    attachSwipeGesture(targetDesktop, () => {
+      nextHeroSlide();
+      restartHeroTimer();
+    }, () => {
+      prevHeroSlide();
+      restartHeroTimer();
+    });
+  }
+
+  restartHeroTimer();
+}
+
+/**
+ * Universal Touch & Mouse Drag / Swipe Gesture Helper
+ */
+function attachSwipeGesture(element, onSwipeLeft, onSwipeRight) {
+  if (!element) return;
+  let startX = 0;
+  let startY = 0;
+  let isPointerDown = false;
+
+  // Touch handlers
+  element.addEventListener("touchstart", (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  element.addEventListener("touchend", (e) => {
+    if (!e.changedTouches || e.changedTouches.length === 0) return;
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) {
+        if (typeof onSwipeLeft === "function") onSwipeLeft();
+      } else {
+        if (typeof onSwipeRight === "function") onSwipeRight();
+      }
+    }
+  }, { passive: true });
+
+  // Mouse drag handlers
+  element.addEventListener("mousedown", (e) => {
+    isPointerDown = true;
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+
+  element.addEventListener("mouseup", (e) => {
+    if (!isPointerDown) return;
+    isPointerDown = false;
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+    if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) {
+        if (typeof onSwipeLeft === "function") onSwipeLeft();
+      } else {
+        if (typeof onSwipeRight === "function") onSwipeRight();
+      }
+    }
+  });
+
+  element.addEventListener("mouseleave", () => {
+    isPointerDown = false;
+  });
 }
 
 /* ==========================================================================
@@ -677,25 +776,98 @@ function renderSkills(skills) {
   `).join("");
 }
 
+let testimonialSliderTimer = null;
+let currentTestimonialSlide = 0;
+
 function renderTestimonials(testimonials) {
   const container = document.getElementById("testimonials-container");
   if (!container) return;
 
-  container.innerHTML = testimonials.map(t => `
-    <div class="testimonial-card">
-      <div>
-        <div class="stars-row">${"★".repeat(t.rating || 5)}</div>
-        <p class="testimonial-text">"${t.comment || t.text}"</p>
+  if (!testimonials || testimonials.length === 0) {
+    container.innerHTML = `<p style="text-align: center; color: var(--text-dim); padding: 2rem 0;">No client reviews available yet.</p>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="testimonials-slider-box" id="testimonials-slider-box">
+      <div class="testimonials-track" id="testimonials-track">
+        ${testimonials.map((t, idx) => `
+          <div class="testimonial-card ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+            <div>
+              <div class="stars-row">${"★".repeat(t.rating || 5)}</div>
+              <p class="testimonial-text">"${t.comment || t.text}"</p>
+            </div>
+            <div class="testimonial-author">
+              <img src="${t.avatar || 'assets/images/avatar.svg'}" alt="${t.name}" class="author-avatar" onerror="this.src='assets/images/avatar.svg'">
+              <div class="author-info">
+                <h4>${t.name}</h4>
+                <p>${t.role || 'Client'}</p>
+              </div>
+            </div>
+          </div>
+        `).join("")}
       </div>
-      <div class="testimonial-author">
-        <img src="${t.avatar || 'assets/images/avatar.svg'}" alt="${t.name}" class="author-avatar">
-        <div class="author-info">
-          <h4>${t.name}</h4>
-          <p>${t.role}</p>
-        </div>
+      <div class="testimonials-dots-row" id="testimonials-dots-row">
+        ${testimonials.map((_, idx) => `
+          <div class="slider-dot ${idx === 0 ? 'active' : ''}" onclick="goToTestimonialSlide(${idx})"></div>
+        `).join("")}
       </div>
     </div>
-  `).join("");
+  `;
+
+  const totalSlides = testimonials.length;
+  currentTestimonialSlide = 0;
+
+  function updateTestimonialVisuals(idx) {
+    currentTestimonialSlide = idx;
+    const cards = document.querySelectorAll("#testimonials-track .testimonial-card");
+    const dots = document.querySelectorAll("#testimonials-dots-row .slider-dot");
+    cards.forEach((c, i) => {
+      if (i === currentTestimonialSlide) {
+        c.classList.add("active");
+      } else {
+        c.classList.remove("active");
+      }
+    });
+    dots.forEach((d, i) => {
+      if (i === currentTestimonialSlide) d.classList.add("active");
+      else d.classList.remove("active");
+    });
+  }
+
+  window.goToTestimonialSlide = function(idx) {
+    updateTestimonialVisuals(idx);
+    restartTestimonialTimer();
+  };
+
+  function nextTestimonial() {
+    currentTestimonialSlide = (currentTestimonialSlide + 1) % totalSlides;
+    updateTestimonialVisuals(currentTestimonialSlide);
+  }
+
+  function prevTestimonial() {
+    currentTestimonialSlide = (currentTestimonialSlide - 1 + totalSlides) % totalSlides;
+    updateTestimonialVisuals(currentTestimonialSlide);
+  }
+
+  function restartTestimonialTimer() {
+    if (testimonialSliderTimer) clearInterval(testimonialSliderTimer);
+    if (totalSlides > 1) {
+      testimonialSliderTimer = setInterval(nextTestimonial, 4500);
+    }
+  }
+
+  const sliderBox = document.getElementById("testimonials-slider-box");
+  if (sliderBox && totalSlides > 1) {
+    attachSwipeGesture(sliderBox, () => {
+      nextTestimonial();
+      restartTestimonialTimer();
+    }, () => {
+      prevTestimonial();
+      restartTestimonialTimer();
+    });
+    restartTestimonialTimer();
+  }
 }
 
 function renderSocialLinks(socials, customSocials) {
@@ -949,12 +1121,58 @@ window.openWhatsAppModal = function() {
   }
 };
 
+window.triggerDirectWhatsApp = function() {
+  const profile = (window.PortfolioData.get && window.PortfolioData.get().profile) || {};
+  const phone = profile.whatsapp || "8250550060";
+  const msg = encodeURIComponent("👋 Hello Rammohan! I am visiting your portfolio website and would like to connect regarding a project.");
+  window.open(`https://wa.me/91${phone}?text=${msg}`, "_blank");
+};
+
+window.triggerDirectCall = function() {
+  const profile = (window.PortfolioData.get && window.PortfolioData.get().profile) || {};
+  const phone = profile.phone || "8250550062";
+  window.location.href = `tel:+91${phone.replace(/[^0-9]/g, '')}`;
+};
+
+window.triggerDirectEmail = function() {
+  const profile = (window.PortfolioData.get && window.PortfolioData.get().profile) || {};
+  const email = profile.email || "rammohanmurmu0@gmail.com";
+  window.location.href = `mailto:${email}?subject=Project Inquiry - Rammohan Murmu Creative Services`;
+};
+
 window.orderProjectWhatsApp = function() {
   if (!activeModalProject) return;
-  const profile = window.PortfolioData.get().profile;
+  const profile = (window.PortfolioData.get && window.PortfolioData.get().profile) || {};
   const phone = profile.whatsapp || "8250550060";
-  const msg = encodeURIComponent(`Hello Rammohan! I saw your project "${activeModalProject.title}" on your portfolio and I would like to discuss a similar project with you.`);
-  window.open(`https://wa.me/91${phone}?text=${msg}`, "_blank");
+
+  // Build full reference image URL
+  let fullImageUrl = activeModalProject.image || (activeModalProject.images && activeModalProject.images.length > 0 ? activeModalProject.images[0] : "");
+  if (fullImageUrl && !fullImageUrl.startsWith("http") && !fullImageUrl.startsWith("data:")) {
+    const origin = window.location.origin;
+    const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+    fullImageUrl = `${origin}${path}${fullImageUrl}`;
+  }
+
+  const categoryText = activeModalProject.subCategoryName || activeModalProject.categoryName || activeModalProject.category || "Creative Work";
+  const clientText = activeModalProject.client || "Client Showcase";
+  const durationText = activeModalProject.duration || "Standard Timeline";
+  const toolsText = (activeModalProject.tools || []).join(", ");
+
+  const textMessage = 
+    `*🔥 NEW PROJECT INQUIRY / ORDER REQUEST*\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `👋 Hello *Rammohan Murmu*! I saw this specific project on your portfolio and I would like to order a similar custom work:\n\n` +
+    `📌 *Project Name:* ${activeModalProject.title}\n` +
+    `🎨 *Category:* ${categoryText}\n` +
+    `🏢 *Client / Type:* ${clientText}\n` +
+    `⏱️ *Est. Duration:* ${durationText}\n` +
+    (toolsText ? `🛠️ *Software/Tools:* ${toolsText}\n` : ``) +
+    (fullImageUrl && !fullImageUrl.startsWith("data:") ? `🖼️ *Reference Image URL:*\n${fullImageUrl}\n` : ``) +
+    `\n━━━━━━━━━━━━━━━━━━━━\n` +
+    `💬 *My Inquiry:* Please share the pricing quote, turnaround time, and your availability for this type of work! 🚀`;
+
+  const encoded = encodeURIComponent(textMessage);
+  window.open(`https://wa.me/91${phone}?text=${encoded}`, "_blank");
 };
 
 window.sendWhatsAppDirect = function(event) {

@@ -35,7 +35,12 @@
               <label for="admin-login-password" style="font-size: 0.82rem; color: var(--text-muted);">Password</label>
               <a href="javascript:void(0)" onclick="switchAuthView('forgot')" style="font-size: 0.78rem; color: var(--accent-cyan); text-decoration: none;">Forgot password?</a>
             </div>
-            <input type="password" id="admin-login-password" class="form-control-admin" placeholder="••••••••" required autocomplete="current-password">
+            <div style="position: relative; display: flex; align-items: center;">
+              <input type="password" id="admin-login-password" class="form-control-admin" placeholder="••••••••" required autocomplete="current-password" style="padding-right: 44px; width: 100%;">
+              <button type="button" onclick="togglePasswordVisibility('admin-login-password', this)" style="position: absolute; right: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem; padding: 4px; display: flex; align-items: center;" title="Show / Hide Password">
+                👁️
+              </button>
+            </div>
           </div>
 
           <button type="submit" id="btn-login-submit" class="pin-btn">
@@ -80,7 +85,12 @@
         <p class="pin-desc">Enter your 4-digit security PIN to access CMS.</p>
 
         <form id="pin-form" onsubmit="handlePinLogin(event)" autocomplete="off">
-          <input type="password" id="admin-pin-input" class="pin-input" maxlength="8" placeholder="••••" autocomplete="new-password" required>
+          <div style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem;">
+            <input type="password" id="admin-pin-input" class="pin-input" maxlength="8" placeholder="••••" autocomplete="new-password" required style="padding-right: 44px; margin-bottom: 0;">
+            <button type="button" onclick="togglePasswordVisibility('admin-pin-input', this)" style="position: absolute; right: 20px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem; padding: 4px;" title="Show / Hide PIN">
+              👁️
+            </button>
+          </div>
           <button type="submit" class="pin-btn">🔓 Unlock with PIN</button>
         </form>
         <p class="pin-helper">Default PIN is <strong>1234</strong></p>
@@ -107,11 +117,21 @@
       <form onsubmit="handleSaveNewPassword(event)">
         <div class="form-group-admin" style="text-align: left; margin-bottom: 1rem;">
           <label for="new-password-val" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; display: block;">New Password</label>
-          <input type="password" id="new-password-val" class="form-control-admin" placeholder="At least 6 characters" minlength="6" required>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="new-password-val" class="form-control-admin" placeholder="At least 6 characters" minlength="6" required style="padding-right: 44px; width: 100%;">
+            <button type="button" onclick="togglePasswordVisibility('new-password-val', this)" style="position: absolute; right: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem; padding: 4px;" title="Show / Hide Password">
+              👁️
+            </button>
+          </div>
         </div>
         <div class="form-group-admin" style="text-align: left; margin-bottom: 1.5rem;">
           <label for="confirm-new-password-val" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; display: block;">Confirm New Password</label>
-          <input type="password" id="confirm-new-password-val" class="form-control-admin" placeholder="Re-enter password" minlength="6" required>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="confirm-new-password-val" class="form-control-admin" placeholder="Re-enter password" minlength="6" required style="padding-right: 44px; width: 100%;">
+            <button type="button" onclick="togglePasswordVisibility('confirm-new-password-val', this)" style="position: absolute; right: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem; padding: 4px;" title="Show / Hide Password">
+              👁️
+            </button>
+          </div>
         </div>
         <button type="submit" class="pin-btn" style="margin-bottom: 0.8rem;">💾 Update Password &amp; Login</button>
       </form>

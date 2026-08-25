@@ -1489,10 +1489,16 @@ window.handleUpdateAdminPassword = async function(event) {
 /**
  * Toggle password field visibility
  */
-window.togglePasswordVisibility = function(inputId) {
+window.togglePasswordVisibility = function(inputId, btnEl) {
   const el = document.getElementById(inputId);
   if (!el) return;
-  el.type = el.type === "password" ? "text" : "password";
+  if (el.type === "password") {
+    el.type = "text";
+    if (btnEl) btnEl.textContent = "🙈";
+  } else {
+    el.type = "password";
+    if (btnEl) btnEl.textContent = "👁️";
+  }
 };
 
 /* Toast Notification Helper */
