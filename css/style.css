@@ -2469,11 +2469,13 @@ textarea.form-control {
     display: none !important;
   }
   .floating-whatsapp-trigger {
-    bottom: 92px;
-    right: 18px;
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
+    bottom: 90px !important;
+    right: 18px !important;
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 1.6rem !important;
+    z-index: 1050 !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 25px rgba(37, 211, 102, 0.6) !important;
   }
   body {
     padding-bottom: 90px;
@@ -2986,7 +2988,7 @@ textarea.form-control {
   justify-content: center;
   font-size: 2rem;
   box-shadow: var(--glow-whatsapp), 0 8px 25px rgba(0, 0, 0, 0.4);
-  z-index: 900;
+  z-index: 1050;
   transition: transform var(--transition-spring), box-shadow var(--transition-fast);
 }
 
@@ -3215,8 +3217,69 @@ textarea.form-control {
     overflow: visible !important;
   }
 
-  .service-feature-chips, .service-tools-row {
+  .service-feature-chips {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.45rem !important;
+    margin-bottom: 1.1rem !important;
+    width: 100% !important;
+  }
+
+  .service-feature-chips .feature-tag-chip,
+  .feature-tag-chip {
     display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0.45rem 0.3rem !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .service-tools-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.45rem !important;
+  }
+
+  /* 4.1 HERO & ABOUT CTA BUTTONS - 2 COLUMNS (50% / 50% SIDE-BY-SIDE) */
+  .hero-buttons,
+  .about-cta-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0.8rem auto 0 !important;
+  }
+
+  .hero-buttons > *,
+  .about-cta-row > * {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 0.72rem 0.25rem !important;
+    font-size: 0.76rem !important;
+    letter-spacing: 0 !important;
+    gap: 0.25rem !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  .hero-buttons > * span,
+  .about-cta-row > * span {
+    font-size: 0.76rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
 
