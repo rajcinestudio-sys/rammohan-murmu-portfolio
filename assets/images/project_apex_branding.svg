@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090514" />
+      <stop offset="50%" stop-color="#180b30" />
+      <stop offset="100%" stop-color="#0c0721" />
+    </linearGradient>
+    <linearGradient id="esportsGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="purpleGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <filter id="shadow1" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="15" stdDeviation="20" flood-color="#8b5cf6" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background Grid -->
+  <rect width="600" height="400" fill="url(#bgGrad1)" />
+  <g opacity="0.15" stroke="#8b5cf6" stroke-width="1">
+    <line x1="0" y1="80" x2="600" y2="80" />
+    <line x1="0" y1="160" x2="600" y2="160" />
+    <line x1="0" y1="240" x2="600" y2="240" />
+    <line x1="0" y1="320" x2="600" y2="320" />
+    <line x1="100" y1="0" x2="100" y2="400" />
+    <line x1="200" y1="0" x2="200" y2="400" />
+    <line x1="300" y1="0" x2="300" y2="400" />
+    <line x1="400" y1="0" x2="400" y2="400" />
+    <line x1="500" y1="0" x2="500" y2="400" />
+  </g>
+
+  <!-- Mascot Emblem Badge -->
+  <g transform="translate(300, 165)" filter="url(#shadow1)">
+    <!-- Shield Outline -->
+    <path d="M-110,-90 L110,-90 L90,60 L0,125 L-90,60 Z" fill="#140f2d" stroke="url(#esportsGold)" stroke-width="6" />
+    <!-- Inner Cyber Accents -->
+    <path d="M-90,-75 L90,-75 L75,50 L0,105 L-75,50 Z" fill="#1e1545" stroke="#6366f1" stroke-width="2" />
+    
+    <!-- 3D Dragon / Apex Panther Mascot Silhouette -->
+    <polygon points="0,-60 -50,-10 -30,40 0,65 30,40 50,-10" fill="url(#purpleGlow)" />
+    <polygon points="0,-45 -35,-5 -20,30 0,50 20,30 35,-5" fill="#0d0822" />
+    <!-- Glowing Cyber Eyes -->
+    <polygon points="-18,-12 -8,-8 -12,-4" fill="#38bdf8" />
+    <polygon points="18,-12 8,-8 12,-4" fill="#38bdf8" />
+    <!-- Fang Accents -->
+    <polygon points="-8,10 -4,22 0,10" fill="#f8fafc" />
+    <polygon points="8,10 4,22 0,10" fill="#f8fafc" />
+  </g>
+
+  <!-- Typography -->
+  <text x="300" y="325" font-family="'Outfit', sans-serif" font-weight="900" font-size="34" letter-spacing="6" fill="url(#esportsGold)" text-anchor="middle" filter="url(#shadow1)">APEX ESPORTS</text>
+  <text x="300" y="352" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="13" letter-spacing="5" fill="#a5b4fc" text-anchor="middle">BRAND IDENTITY &amp; STREAM SUITE</text>
+
+  <!-- Floating UI Badges -->
+  <g transform="translate(40, 40)">
+    <rect width="130" height="32" rx="16" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5" opacity="0.9" />
+    <text x="65" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700" fill="#c084fc" text-anchor="middle">GRAPHIC DESIGN</text>
+  </g>
+  <g transform="translate(450, 40)">
+    <rect width="110" height="32" rx="16" fill="#1e1b4b" stroke="#f59e0b" stroke-width="1.5" opacity="0.9" />
+    <text x="55" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700" fill="#fbbf24" text-anchor="middle">★ FEATURED</text>
+  </g>
+</svg>

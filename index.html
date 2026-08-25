@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rammohan Murmu | Creative Graphic &amp; Web Designer | Video Editor</title>
+  <meta name="description" content="Portfolio of Rammohan Murmu - Creative Graphics Designer, UI/UX & Web Designer, and Cinematic Video Editor. Specializing in high-impact brand identities, modern 3D websites, viral thumbnails, and cinematic video editing.">
+  <meta name="keywords" content="Rammohan Murmu, Graphic Designer, Video Editor, Web Designer, UI/UX Designer, Thumbnails, Posters, India, Portfolio, 3D Web, Branding, Figma, Photoshop, Premiere Pro">
+  <meta name="author" content="Rammohan Murmu">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:title" content="Rammohan Murmu - Graphic &amp; Web Designer | Video Editor">
+  <meta property="og:description" content="Transforming ideas into high-impact visuals, modern 3D web experiences & cinematic videos.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/images/avatar.svg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/avatar.svg">
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="splash-locked">
+
+  <!-- ==========================================================================
+       SPLASH SCREEN / PRELOADER (100% LOADING WITH LOGO)
+       ========================================================================== -->
+  <div id="splash-screen" class="splash-screen">
+    <div class="splash-content">
+      <div class="splash-logo-box">
+        <div class="splash-logo-badge">RM</div>
+        <div class="splash-logo-glow"></div>
+      </div>
+      <h2 class="splash-title">
+        <span class="gradient-text">Rammohan Murmu</span>
+      </h2>
+      <p class="splash-subtitle">Crafting Visuals • 3D Web • Cinematic Motion</p>
+      
+      <div class="splash-progress-container">
+        <div class="splash-progress-bar" id="splash-progress-bar"></div>
+      </div>
+      <div class="splash-counter" id="splash-counter">0%</div>
+    </div>
+  </div>
+
+  <!-- Background Interactive Canvas & Ambient Lighting -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Custom Cursor Elements (Desktop) -->
+  <div class="custom-cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursor-dot"></div>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-container">
+      <a href="#hero" class="logo-link" id="nav-logo-link">
+        <div class="logo-badge" id="nav-logo-badge">RM</div>
+        <div class="logo-text">
+          <span id="nav-profile-name">Rammohan</span> Murmu
+        </div>
+      </a>
+
+      <!-- Desktop Nav Menu -->
+      <ul class="nav-links" id="desktop-nav">
+        <li><a href="#hero" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#portfolio">Works</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <!-- Desktop Action CTA -->
+      <div class="nav-actions">
+        <button class="btn-primary desktop-cta" onclick="openWhatsAppModal()" id="btn-header-hire">
+          <span>💬 Let's Talk</span>
+        </button>
+
+        <!-- 3-Line Mobile Hamburger Menu Toggle -->
+        <button class="hamburger-btn" id="mobile-menu-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Slide-out Drawer -->
+  <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeMobileMenu()"></div>
+  <div class="mobile-nav-drawer" id="mobile-drawer">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 2.5rem;">
+        <div class="logo-badge">RM</div>
+        <strong style="font-size: 1.1rem;">Rammohan Murmu</strong>
+      </div>
+
+      <ul class="drawer-nav-list">
+        <li><a href="#hero" onclick="closeMobileMenu()"><span>🏠</span> Home</a></li>
+        <li><a href="#about" onclick="closeMobileMenu()"><span>👤</span> About</a></li>
+        <li><a href="#services" onclick="closeMobileMenu()"><span>⚡</span> Services</a></li>
+        <li><a href="#portfolio" onclick="closeMobileMenu()"><span>🎨</span> Works</a></li>
+        <li><a href="#skills" onclick="closeMobileMenu()"><span>🚀</span> Skills</a></li>
+        <li><a href="#testimonials" onclick="closeMobileMenu()"><span>⭐</span> Reviews</a></li>
+        <li><a href="#contact" onclick="closeMobileMenu()"><span>✉️</span> Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <button class="btn-primary btn-whatsapp" style="width: 100%;" onclick="openWhatsAppModal(); closeMobileMenu();">
+        <span>💬 Instant WhatsApp</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       HERO SECTION WITH 3D BANNER & FEATURED WORKS SLIDER
+       ========================================================================== -->
+  <section class="hero-section" id="hero">
+    <div class="container hero-grid" id="hero-grid-container">
+      
+      <!-- Left Main Hero Content -->
+      <div class="hero-content">
+        <div class="badge-pill">
+          <span class="status-pulse"></span>
+          <span id="hero-badge-text">Available for Projects &amp; Remote Work</span>
+        </div>
+
+        <h1 class="hero-title">
+          Hi, I'm <span class="gradient-text" id="hero-name-highlight">Rammohan Murmu</span><br>
+          <span class="typing-wrapper" id="hero-typing-target">Graphics Designer</span>
+        </h1>
+
+        <p class="hero-desc" id="hero-tagline-desc">
+          Crafting high-impact visual identities, modern 3D websites, viral YouTube thumbnails, and cinematic video edits with cutting-edge aesthetics.
+        </p>
+
+        <div class="hero-buttons">
+          <button class="btn-primary btn-whatsapp-highlight" onclick="openWhatsAppModal()" id="btn-hero-hire">
+            <span>💬 Chat on WhatsApp</span>
+          </button>
+          <a href="#portfolio" class="btn-secondary" id="btn-hero-works">
+            <span>🎨 Explore Works</span>
+          </a>
+        </div>
+
+        <!-- Quick Experience Stats -->
+        <div class="hero-stats-row">
+          <div class="stat-item">
+            <h3 id="stat-exp">3+</h3>
+            <p>Years Exp</p>
+          </div>
+          <div class="stat-item">
+            <h3 id="stat-projects">85+</h3>
+            <p>Projects Done</p>
+          </div>
+          <div class="stat-item">
+            <h3 id="stat-clients">99%</h3>
+            <p>Satisfaction</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile 16:9 Featured Works Carousel (Only on Mobile <= 768px) -->
+      <div class="hero-mobile-featured-wrapper" id="hero-mobile-featured-wrapper">
+        <div class="mobile-slider-topbar">
+          <span class="mobile-slider-badge">🔥 Featured Banners &amp; Works</span>
+          <div class="mobile-slider-nav-dots" id="hero-mobile-nav-dots"></div>
+        </div>
+        <!-- 16:9 Aspect Ratio Carousel Track -->
+        <div class="hero-mobile-16x9-track" id="hero-mobile-16x9-track">
+          <div class="hero-mobile-slide active">
+            <img src="assets/images/hero_banner.jpg" alt="Featured Workstation">
+            <div class="hero-slide-overlay">
+              <div>
+                <div class="hero-slide-category">Featured Studio</div>
+                <div class="hero-slide-title">Rammohan Murmu Creative Workstation</div>
+              </div>
+              <span class="hero-slide-badge-btn">👁️ View</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 3D Workstation Card & Desktop Featured Works Slider -->
+      <div class="hero-image-wrapper">
+        <div class="hero-banner-3d-stage">
+          
+          <!-- Glowing Center Card with Auto-sliding Featured Works Banners -->
+          <div class="banner-central-card" id="hero-desktop-slider-card">
+            <div class="hero-desktop-slides-wrapper" id="hero-desktop-slides-wrapper">
+              <div class="hero-desktop-slide active">
+                <img src="assets/images/hero_banner.jpg" alt="Rammohan Murmu 3D Workstation Artwork">
+                <div class="hero-slide-overlay">
+                  <div>
+                    <div class="hero-slide-category">Featured Studio</div>
+                    <div class="hero-slide-title">Rammohan Murmu Creative Workstation</div>
+                  </div>
+                  <span class="hero-slide-badge-btn">🎨 View Showcase</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide Dots Indicator -->
+            <div class="hero-slider-dots-bar" id="hero-desktop-nav-dots"></div>
+            <div class="banner-ambient-overlay"></div>
+          </div>
+
+          <!-- 6 Animated 3D Floating Software Pills (Desktop Only, contained safely) -->
+          <div class="hero-floating-badges-layer">
+            
+            <!-- 1. Figma Pill (Top Left) -->
+            <div class="hero-floating-pill pill-figma" title="Figma UI/UX &amp; Prototyping">
+              <span class="pill-app-icon icon-figma">❖</span>
+              <span class="pill-label">Figma UI/UX</span>
+            </div>
+
+            <!-- 2. Adobe Illustrator (Top Right) -->
+            <div class="hero-floating-pill pill-ai" title="Adobe Illustrator Vector Art">
+              <span class="pill-app-icon icon-ai">Ai</span>
+              <span class="pill-label">Illustrator</span>
+            </div>
+
+            <!-- 3. Adobe Photoshop (Mid Left) -->
+            <div class="hero-floating-pill pill-ps" title="Adobe Photoshop Visuals">
+              <span class="pill-app-icon icon-ps">Ps</span>
+              <span class="pill-label">Photoshop</span>
+            </div>
+
+            <!-- 4. Adobe Premiere Pro (Mid Right) -->
+            <div class="hero-floating-pill pill-pr" title="Adobe Premiere Pro Video Editing">
+              <span class="pill-app-icon icon-pr">Pr</span>
+              <span class="pill-label">Premiere Pro</span>
+            </div>
+
+            <!-- 5. Adobe After Effects (Bottom Left) -->
+            <div class="hero-floating-pill pill-ae" title="Adobe After Effects VFX &amp; Motion">
+              <span class="pill-app-icon icon-ae">Ae</span>
+              <span class="pill-label">After Effects</span>
+            </div>
+
+            <!-- 6. Premium Quality Badge (Bottom Center) -->
+            <div class="hero-floating-pill pill-quality" title="Top Rated &amp; Verified Quality">
+              <span class="pill-app-icon icon-star">★</span>
+              <div class="pill-dual-text">
+                <span class="pill-title">Top Quality</span>
+                <span class="pill-subtitle">Pixel-Perfect</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ABOUT SECTION (WITH 3D CREATIVE PORTRAIT & BIO)
+       ========================================================================== -->
+  <section id="about" style="background: rgba(10, 12, 18, 0.5);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">👤 About Me</span>
+        <h2 class="section-title">Driven by Creativity, <span class="highlight-text">Powered by Precision</span></h2>
+        <p class="section-desc">Get to know the designer &amp; video editor behind the visual creations.</p>
+      </div>
+
+      <div class="about-modern-layout">
+        
+        <!-- Left: 3D Portrait / Creative Photo Card -->
+        <div class="about-portrait-card">
+          <div class="about-portrait-img-box">
+            <img src="assets/images/avatar.svg" alt="Rammohan Murmu" class="about-portrait-img" id="about-profile-img">
+          </div>
+
+          <!-- Floating Experience Badge -->
+          <div class="about-exp-float-badge">
+            <span class="exp-icon">🏆</span>
+            <div>
+              <strong id="about-exp-number">3+ Years</strong>
+              <span>Experience</span>
+            </div>
+          </div>
+
+          <!-- Online Status Badge -->
+          <div class="about-status-float-pill">
+            <span class="status-dot"></span>
+            <span>Available for Freelance</span>
+          </div>
+        </div>
+
+        <!-- Right: Bio Details & Philosophy -->
+        <div class="about-content-card">
+          <div class="about-badge-tag">✨ Multidisciplinary Creative</div>
+          <h3 class="about-headline">
+            Transforming Visual Concepts into <span class="highlight-text">High-Impact Realities</span>
+          </h3>
+          
+          <p class="about-bio-paragraph" id="about-fullbio">
+            Hello! I am Rammohan Murmu, a passionate multidisciplinary designer and creative video editor based in India. I craft distinctive visual identities, intuitive user experiences, responsive modern websites, and engaging motion content.
+          </p>
+
+          <div class="about-skills-chips-row">
+            <span class="about-skill-chip">🎨 Brand Identity</span>
+            <span class="about-skill-chip">📺 YouTube Thumbnails</span>
+            <span class="about-skill-chip">🎬 Cinematic Editing</span>
+            <span class="about-skill-chip">📱 Figma UI/UX</span>
+            <span class="about-skill-chip">🌐 Modern Web</span>
+          </div>
+
+          <!-- Stats Grid inside About -->
+          <div class="about-stats-row">
+            <div class="about-stat-box">
+              <h4 id="about-stat-projects">85+</h4>
+              <p>Projects Done</p>
+            </div>
+            <div class="about-stat-box">
+              <h4 id="about-stat-clients">60+</h4>
+              <p>Happy Clients</p>
+            </div>
+            <div class="about-stat-box">
+              <h4 id="about-stat-satisfaction">99%</h4>
+              <p>Client Retention</p>
+            </div>
+          </div>
+
+          <div class="about-cta-row">
+            <button class="btn-primary btn-whatsapp-highlight" onclick="openWhatsAppModal()">
+              <span>💬 Hire Rammohan</span>
+            </button>
+            <a href="#portfolio" class="btn-secondary">
+              <span>🎨 Browse Works</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SERVICES & OFFERINGS SECTION
+       ========================================================================== -->
+  <section id="services">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">⚡ Core Competencies</span>
+        <h2 class="section-title">Specialized Services &amp; <span class="highlight-text">Solutions</span></h2>
+        <p class="section-desc">Tailored design, video, and web solutions built to capture attention and elevate your brand presence.</p>
+      </div>
+
+      <div class="services-grid" id="services-container">
+        <!-- Rendered dynamically via js/main.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       PORTFOLIO & FEATURED WORKS SECTION
+       ========================================================================== -->
+  <section id="portfolio" style="background: rgba(6, 8, 12, 0.7);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">🎨 Creative Showcase</span>
+        <h2 class="section-title">Featured Works &amp; <span class="highlight-text">Recent Projects</span></h2>
+        <p class="section-desc">Explore visual branding, YouTube packaging, cinematic motion edits, and UI/UX solutions.</p>
+      </div>
+
+      <!-- Main Category Filters -->
+      <div class="portfolio-filter-bar" id="portfolio-main-filters">
+        <button class="filter-btn active" data-filter="all">
+          <span>🌟</span> <span>All Works</span>
+        </button>
+        <button class="filter-btn" data-filter="graphics">
+          <span>🎨</span> <span>Graphics Design</span>
+        </button>
+        <button class="filter-btn" data-filter="video">
+          <span>🎬</span> <span>Video Editing</span>
+        </button>
+        <button class="filter-btn" data-filter="uiux">
+          <span>💻</span> <span>UI/UX &amp; Web</span>
+        </button>
+      </div>
+
+      <!-- Dynamic Subcategory Filter Chips Bar -->
+      <div class="portfolio-subfilters-wrapper" id="portfolio-subfilters-wrapper">
+        <div class="portfolio-subfilters-bar" id="portfolio-subfilters">
+          <!-- Populated dynamically via js/main.js -->
+        </div>
+      </div>
+
+      <!-- Project Cards Grid -->
+      <div class="portfolio-grid" id="portfolio-grid">
+        <!-- Rendered dynamically via js/main.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SKILLS & MASTERY SECTION
+       ========================================================================== -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">🚀 Technical Arsenal</span>
+        <h2 class="section-title">Industry Standard Tools &amp; <span class="highlight-text">Software Mastery</span></h2>
+        <p class="section-desc">The specialized tools and technologies I use to bring ideas to reality.</p>
+      </div>
+
+      <div class="skills-grid" id="skills-container">
+        <!-- Rendered dynamically via js/main.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       TESTIMONIALS & REVIEWS SECTION
+       ========================================================================== -->
+  <section id="testimonials" style="background: rgba(10, 12, 18, 0.6);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">⭐ Client Endorsements</span>
+        <h2 class="section-title">What Clients Say About <span class="highlight-text">Working Together</span></h2>
+        <p class="section-desc">Real testimonials from content creators, founders, and teams I've collaborated with.</p>
+      </div>
+
+      <div class="testimonials-grid" id="testimonials-container">
+        <!-- Rendered dynamically via js/main.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CONTACT & WHATSAPP SECTION
+       ========================================================================== -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">✉️ Get In Touch</span>
+        <h2 class="section-title">Let's Build Something <span class="highlight-text">Extraordinary</span></h2>
+        <p class="section-desc">Have a project in mind or want to collaborate? Send a message or connect directly on WhatsApp!</p>
+      </div>
+
+      <div class="contact-wrapper">
+        <!-- Left Contact Info Cards -->
+        <div class="contact-info-cards">
+          <div class="contact-card-item">
+            <div class="contact-card-icon wa">💬</div>
+            <div class="contact-card-details">
+              <h4>WhatsApp Instant Chat</h4>
+              <a href="https://wa.me/918250550060" target="_blank" rel="noopener" id="contact-wa-link">+91 8250550060</a>
+            </div>
+          </div>
+
+          <div class="contact-card-item">
+            <div class="contact-card-icon">📞</div>
+            <div class="contact-card-details">
+              <h4>Direct Call / Phone</h4>
+              <a href="tel:8250550062" id="contact-phone-link">+91 8250550062</a>
+            </div>
+          </div>
+
+          <div class="contact-card-item">
+            <div class="contact-card-icon">✉️</div>
+            <div class="contact-card-details">
+              <h4>Email Inquiry</h4>
+              <a href="mailto:rammohanmurmu0@gmail.com" id="contact-email-link">rammohanmurmu0@gmail.com</a>
+            </div>
+          </div>
+
+          <div class="contact-card-item">
+            <div class="contact-card-icon">📍</div>
+            <div class="contact-card-details">
+              <h4>Location &amp; Work Mode</h4>
+              <p id="contact-location-text">West Bengal, India • Remote Worldwide</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Direct Form & WhatsApp Dispatch -->
+        <div class="contact-form-box">
+          <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; margin-bottom: 1.2rem;">
+            Send Direct Message
+          </h3>
+          <form id="portfolio-contact-form" onsubmit="handleContactSubmit(event)">
+            <div class="form-group">
+              <label for="form-name">Your Full Name</label>
+              <input type="text" id="form-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+            </div>
+
+            <div class="form-group">
+              <label for="form-email">Your Email / Phone</label>
+              <input type="text" id="form-email" class="form-control" placeholder="e.g. name@domain.com or phone" required>
+            </div>
+
+            <div class="form-group">
+              <label for="form-service">Service Required</label>
+              <select id="form-service" class="form-control" style="background: #0e111a;">
+                <option value="Graphic Design &amp; Thumbnails">Graphic Design &amp; Thumbnails</option>
+                <option value="Poster &amp; Flex Banner Design">Poster &amp; Flex Banner Design</option>
+                <option value="Cinematic Video Editing">Cinematic Video Editing</option>
+                <option value="UI/UX &amp; App Design">UI/UX &amp; App Design</option>
+                <option value="Modern Web Design &amp; Dev">Modern Web Design &amp; Dev</option>
+                <option value="Custom Project / Other">Custom Project / Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="form-message">Project Description &amp; Details</label>
+              <textarea id="form-message" class="form-control" placeholder="Tell me about your project, goals, timeline, or requirements..." required></textarea>
+            </div>
+
+            <div class="form-action-row">
+              <button type="submit" class="btn-primary" style="flex-grow: 1;">
+                <span>🚀 Send via WhatsApp &amp; Email</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       POLISHED 4-COLUMN FOOTER SYSTEM
+       ========================================================================== -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid-4">
+        
+        <!-- Column 1: Brand & Bio + 3D Compact Admin Link -->
+        <div class="footer-col footer-col-brand">
+          <div class="footer-logo">
+            <span style="background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 1.3rem;">RM Studio</span>
+          </div>
+          <p class="footer-bio-text" id="footer-bio-tag">
+            Transforming ideas into high-impact visuals, modern 3D web experiences &amp; cinematic videos.
+          </p>
+          <div class="footer-meta-pill">
+            <span>📍</span> <span>West Bengal, India • Remote Global</span>
+          </div>
+
+          <!-- 3D Luminous Compact Admin Button -->
+          <div style="margin-top: 1.2rem;">
+            <a href="admin.html" class="footer-admin-3d-btn" title="Open Admin CMS Dashboard">
+              <span class="admin-icon-glow">🔒</span>
+              <span>Admin CMS</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Column 2: Navigation Quick Links -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-links-list">
+            <li><a href="#hero">🏠 Home</a></li>
+            <li><a href="#about">👤 About Me</a></li>
+            <li><a href="#services">⚡ Services</a></li>
+            <li><a href="#portfolio">🎨 Featured Works</a></li>
+            <li><a href="#skills">🚀 Skills</a></li>
+            <li><a href="#testimonials">⭐ Reviews</a></li>
+            <li><a href="#contact">✉️ Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Services Offered -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Specializations</h4>
+          <ul class="footer-links-list">
+            <li><a href="#services">Graphic Design &amp; Logos</a></li>
+            <li><a href="#services">YouTube Viral Thumbnails</a></li>
+            <li><a href="#services">Event Posters &amp; Flex Banners</a></li>
+            <li><a href="#services">Cinematic Video Editing</a></li>
+            <li><a href="#services">UI/UX &amp; Web Design</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Contact & WhatsApp CTA -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Direct Connect</h4>
+          <div class="footer-contact-compact">
+            <p><span>📞</span> <span id="footer-phone">+91 8250550062</span></p>
+            <p><span>💬</span> <span id="footer-wa">+91 8250550060</span></p>
+            <p><span>✉️</span> <span id="footer-email">rammohanmurmu0@gmail.com</span></p>
+          </div>
+
+          <!-- Dynamic 3-4 Social Icons -->
+          <div class="footer-social-icons-row" id="footer-socials-container">
+            <!-- Populated dynamically via js/main.js -->
+          </div>
+
+          <!-- Highlighted Green WhatsApp Button -->
+          <div style="margin-top: 1rem;">
+            <button class="footer-whatsapp-highlight-btn" onclick="openWhatsAppModal()">
+              <span>💬</span> <span>Chat on WhatsApp</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-bar">
+        <p>© 2026 Rammohan Murmu. All rights reserved. Free GitHub Pages Ready.</p>
+        <p style="color: var(--text-dim); font-size: 0.8rem;">3D Visual Aesthetics &amp; Modern CMS</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       FLOATING WHATSAPP BUTTON (DESKTOP)
+       ========================================================================== -->
+  <button class="floating-whatsapp-trigger" onclick="openWhatsAppModal()" title="Instant WhatsApp Inquiry" id="btn-floating-wa">
+    💬
+  </button>
+
+  <!-- ==========================================================================
+       MOBILE 3D BOTTOM NAVIGATION DOCK (5 EXACT ITEMS)
+       ========================================================================== -->
+  <nav class="mobile-bottom-dock" id="mobile-dock">
+    <a href="#hero" class="dock-item active" data-section="hero">
+      <span class="dock-icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="#services" class="dock-item" data-section="services">
+      <span class="dock-icon">⚡</span>
+      <span>Services</span>
+    </a>
+    <a href="#portfolio" class="dock-item" data-section="portfolio">
+      <span class="dock-icon">🎨</span>
+      <span>Works</span>
+    </a>
+    <a href="#skills" class="dock-item" data-section="skills">
+      <span class="dock-icon">🚀</span>
+      <span>Skills</span>
+    </a>
+    <a href="#contact" class="dock-item" data-section="contact">
+      <span class="dock-icon">✉️</span>
+      <span>Contact</span>
+    </a>
+  </nav>
+
+  <!-- ==========================================================================
+       PROJECT MULTI-IMAGE LIGHTBOX MODAL WITH RATINGS & REVIEWS
+       ========================================================================== -->
+  <div class="modal-backdrop" id="project-modal" onclick="closeModalOnBackdrop(event, 'project-modal')">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeModal('project-modal')">✕</button>
+      
+      <!-- Main Media Box (Image / Video Player) -->
+      <div class="lightbox-media-box" id="modal-media-container">
+        <!-- Dynamic Image or Video Player -->
+      </div>
+
+      <!-- Multi-Image Thumbnails Gallery -->
+      <div class="lightbox-gallery-thumbs" id="modal-gallery-thumbs"></div>
+
+      <div class="lightbox-body">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+          <div>
+            <span class="project-badge-tag" id="modal-category-tag" style="position: static; margin-bottom: 0.5rem; display: inline-block;">Category</span>
+            <h2 id="modal-title" style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800;">Project Title</h2>
+          </div>
+          <button class="btn-primary btn-whatsapp" id="modal-order-btn" onclick="orderProjectWhatsApp()">
+            <span>💬 Inquire Similar Project</span>
+          </button>
+        </div>
+
+        <p id="modal-description" style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+          Project description details...
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 14px;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Client</div>
+            <div id="modal-client" style="font-weight: 700;">Client Name</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Duration</div>
+            <div id="modal-duration" style="font-weight: 700;">Timeline</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">Tools &amp; Tech Used</div>
+          <div class="project-tags" id="modal-tools-container"></div>
+        </div>
+
+        <!-- Project Ratings & Reviews Section -->
+        <div class="project-reviews-section" id="modal-reviews-section">
+          <!-- Rendered dynamically via js/main.js -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       WHATSAPP SMART INQUIRY AUTOMATION MODAL
+       ========================================================================== -->
+  <div class="modal-backdrop" id="whatsapp-modal" onclick="closeModalOnBackdrop(event, 'whatsapp-modal')">
+    <div class="modal-box" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeModal('whatsapp-modal')">✕</button>
+      
+      <div class="wa-inquiry-box">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div style="width: 54px; height: 54px; background: rgba(37, 211, 102, 0.15); border: 1px solid rgba(37, 211, 102, 0.4); border-radius: 16px; color: #25d366; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1rem;">
+            💬
+          </div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">Direct WhatsApp Dispatch</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Fill in your project details and click Send to open a pre-filled WhatsApp message directly to Rammohan Murmu.</p>
+        </div>
+
+        <form id="wa-inquiry-form" onsubmit="sendWhatsAppDirect(event)">
+          <div class="form-group">
+            <label for="wa-name">Your Name / Brand</label>
+            <input type="text" id="wa-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+          </div>
+
+          <div class="form-group">
+            <label for="wa-service">Service Needed</label>
+            <select id="wa-service" class="form-control" style="background: #0e111a;">
+              <option value="YouTube Thumbnails & Graphics">YouTube Thumbnails &amp; Graphics</option>
+              <option value="Poster & Flex Banner Design">Poster &amp; Flex Banner Design</option>
+              <option value="Cinematic Video Editing">Cinematic Video Editing</option>
+              <option value="UI/UX & Mobile App Design">UI/UX &amp; Mobile App Design</option>
+              <option value="Modern Web Design & Dev">Modern Web Design &amp; Dev</option>
+              <option value="Custom Project / Other">Custom Project / Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="wa-budget">Estimated Budget / Timeline</label>
+            <input type="text" id="wa-budget" class="form-control" placeholder="e.g. ₹5,000 - ₹20,000 / Urgent (3 Days)">
+          </div>
+
+          <div class="form-group">
+            <label for="wa-details">Project Description / Brief</label>
+            <textarea id="wa-details" class="form-control" placeholder="Briefly describe what you need..." required></textarea>
+          </div>
+
+          <div class="form-action-row">
+            <button type="submit" class="btn-primary btn-whatsapp" style="width: 100%;">
+              <span>💬 Open WhatsApp &amp; Send Inquiry</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase Cloud SDK & Configuration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <!-- JavaScript Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
