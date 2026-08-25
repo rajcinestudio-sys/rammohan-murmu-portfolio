@@ -26,8 +26,8 @@
         
         <form id="supabase-login-form" onsubmit="handleSupabaseLogin(event)" autocomplete="on">
           <div class="form-group-admin" style="text-align: left; margin-bottom: 1rem;">
-            <label for="admin-login-email" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; display: block;">Admin Email</label>
-            <input type="email" id="admin-login-email" class="form-control-admin" placeholder="rammohanmurmu0@gmail.com" required autocomplete="email">
+            <label for="admin-login-email" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; display: block;">Admin Email / Number</label>
+            <input type="text" id="admin-login-email" class="form-control-admin" placeholder="Email/Number" required autocomplete="username">
           </div>
 
           <div class="form-group-admin" style="text-align: left; margin-bottom: 1.2rem;">
@@ -63,8 +63,8 @@
 
         <form id="supabase-forgot-form" onsubmit="handleSupabaseForgotPassword(event)">
           <div class="form-group-admin" style="text-align: left; margin-bottom: 1.2rem;">
-            <label for="admin-forgot-email" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; display: block;">Registered Admin Email</label>
-            <input type="email" id="admin-forgot-email" class="form-control-admin" placeholder="rammohanmurmu0@gmail.com" required>
+            <label for="admin-forgot-email" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; display: block;">Registered Admin Email / Number</label>
+            <input type="text" id="admin-forgot-email" class="form-control-admin" placeholder="Email/Number" required>
           </div>
 
           <button type="submit" id="btn-forgot-submit" class="pin-btn">
@@ -212,6 +212,11 @@
         <li>
           <button class="nav-tab-btn" data-tab="tab-sync">
             <span>☁️</span> <span>Supabase &amp; Sync</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="tab-themes">
+            <span>🎭</span> <span>3D Theme Studio</span>
           </button>
         </li>
       </ul>
@@ -489,20 +494,36 @@
 
           <div class="form-grid-2">
             <div class="form-group-admin">
+              <label for="prof-youtube">YouTube Channel URL</label>
+              <input type="url" id="prof-youtube" class="form-control-admin" placeholder="https://youtube.com/@...">
+            </div>
+            <div class="form-group-admin">
+              <label for="prof-facebook">Facebook Profile / Page URL</label>
+              <input type="url" id="prof-facebook" class="form-control-admin" placeholder="https://facebook.com/...">
+            </div>
+            <div class="form-group-admin">
               <label for="prof-instagram">Instagram Profile URL</label>
-              <input type="url" id="prof-instagram" class="form-control-admin">
-            </div>
-            <div class="form-group-admin">
-              <label for="prof-behance">Behance URL</label>
-              <input type="url" id="prof-behance" class="form-control-admin">
-            </div>
-            <div class="form-group-admin">
-              <label for="prof-dribbble">Dribbble URL</label>
-              <input type="url" id="prof-dribbble" class="form-control-admin">
+              <input type="url" id="prof-instagram" class="form-control-admin" placeholder="https://instagram.com/...">
             </div>
             <div class="form-group-admin">
               <label for="prof-linkedin">LinkedIn URL</label>
-              <input type="url" id="prof-linkedin" class="form-control-admin">
+              <input type="url" id="prof-linkedin" class="form-control-admin" placeholder="https://linkedin.com/in/...">
+            </div>
+            <div class="form-group-admin">
+              <label for="prof-twitter">Twitter / X URL</label>
+              <input type="url" id="prof-twitter" class="form-control-admin" placeholder="https://x.com/...">
+            </div>
+            <div class="form-group-admin">
+              <label for="prof-behance">Behance URL</label>
+              <input type="url" id="prof-behance" class="form-control-admin" placeholder="https://behance.net/...">
+            </div>
+            <div class="form-group-admin">
+              <label for="prof-dribbble">Dribbble URL</label>
+              <input type="url" id="prof-dribbble" class="form-control-admin" placeholder="https://dribbble.com/...">
+            </div>
+            <div class="form-group-admin">
+              <label for="prof-github">GitHub URL</label>
+              <input type="url" id="prof-github" class="form-control-admin" placeholder="https://github.com/...">
             </div>
           </div>
 
@@ -709,6 +730,136 @@
       </div>
     </div>
 
+    <!-- ==========================================================================
+         TAB 8: 3D THEME STUDIO & MULTI-THEME PRESETS
+         ========================================================================== -->
+    <div class="tab-panel" id="tab-themes">
+      <div class="panel-header theme-studio-header">
+        <div>
+          <h2>🎭 3D Theme Studio</h2>
+          <p>Switch your portfolio visual appearance with 1-click 3D theme presets & real-time live sync.</p>
+        </div>
+        <div>
+          <a href="index.html" target="_blank" class="btn-admin btn-admin-primary" style="text-decoration: none;">
+            <span>👁️ Preview Live Site</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="theme-grid-3d" id="theme-cards-container">
+        <!-- 3D Theme 1: Cyber Neon Dark -->
+        <div class="theme-card-3d" id="theme-card-cyber-dark">
+          <div>
+            <div class="theme-card-header">
+              <div class="theme-title-box">
+                <h3><span>🌌</span> Cyber Dark (Default)</h3>
+                <p>Obsidian Deep Space &amp; Neon Violet/Cyan Glow</p>
+              </div>
+              <span class="theme-active-pill"><span>✓</span> Active</span>
+            </div>
+
+            <div class="theme-preview-box preview-cyber-dark">
+              <div class="preview-mini-nav">
+                <div class="preview-mini-logo"></div>
+                <div class="preview-mini-pill"></div>
+              </div>
+              <div class="preview-mini-body">
+                <div class="preview-mini-title"></div>
+                <div class="preview-mini-desc"></div>
+                <div class="preview-mini-btn"></div>
+              </div>
+            </div>
+
+            <div class="theme-palette-row">
+              <span class="theme-palette-label">Palette:</span>
+              <span class="palette-swatch-dot" style="background: #07080c;" title="Background: #07080c"></span>
+              <span class="palette-swatch-dot" style="background: #8b5cf6;" title="Violet Glow: #8b5cf6"></span>
+              <span class="palette-swatch-dot" style="background: #06b6d4;" title="Cyan Glow: #06b6d4"></span>
+              <span class="palette-swatch-dot" style="background: #f8fafc;" title="Text: #f8fafc"></span>
+            </div>
+          </div>
+
+          <button class="btn-theme-activate" onclick="handleSwitchTheme('cyber-dark')">
+            <span>✨ Apply Cyber Dark</span>
+          </button>
+        </div>
+
+        <!-- 3D Theme 2: Pure Luxury White -->
+        <div class="theme-card-3d" id="theme-card-luxury-white">
+          <div>
+            <div class="theme-card-header">
+              <div class="theme-title-box">
+                <h3><span>☀️</span> Luxury Pearl White</h3>
+                <p>Frosted Glass Light Mode with Crisp Slate Contrast</p>
+              </div>
+              <span class="theme-active-pill"><span>✓</span> Active</span>
+            </div>
+
+            <div class="theme-preview-box preview-luxury-white">
+              <div class="preview-mini-nav">
+                <div class="preview-mini-logo"></div>
+                <div class="preview-mini-pill"></div>
+              </div>
+              <div class="preview-mini-body">
+                <div class="preview-mini-title"></div>
+                <div class="preview-mini-desc"></div>
+                <div class="preview-mini-btn"></div>
+              </div>
+            </div>
+
+            <div class="theme-palette-row">
+              <span class="theme-palette-label">Palette:</span>
+              <span class="palette-swatch-dot" style="background: #f5f7fc;" title="Background: #f5f7fc"></span>
+              <span class="palette-swatch-dot" style="background: #6366f1;" title="Indigo Accent: #6366f1"></span>
+              <span class="palette-swatch-dot" style="background: #0284c7;" title="Sky Accent: #0284c7"></span>
+              <span class="palette-swatch-dot" style="background: #0f172a;" title="Text: #0f172a"></span>
+            </div>
+          </div>
+
+          <button class="btn-theme-activate" onclick="handleSwitchTheme('luxury-white')">
+            <span>✨ Apply Luxury White</span>
+          </button>
+        </div>
+
+        <!-- 3D Theme 3: Royal Apex Purple & Gold -->
+        <div class="theme-card-3d" id="theme-card-midnight-gold">
+          <div>
+            <div class="theme-card-header">
+              <div class="theme-title-box">
+                <h3><span>👑</span> Royal Apex Purple &amp; Gold</h3>
+                <p>Cosmic Deep Violet, Solar Gold &amp; Neon Lavender 3D</p>
+              </div>
+              <span class="theme-active-pill"><span>✓</span> Active</span>
+            </div>
+
+            <div class="theme-preview-box preview-midnight-gold">
+              <div class="preview-mini-nav">
+                <div class="preview-mini-logo"></div>
+                <div class="preview-mini-pill"></div>
+              </div>
+              <div class="preview-mini-body">
+                <div class="preview-mini-title"></div>
+                <div class="preview-mini-desc"></div>
+                <div class="preview-mini-btn"></div>
+              </div>
+            </div>
+
+            <div class="theme-palette-row">
+              <span class="theme-palette-label">Palette:</span>
+              <span class="palette-swatch-dot" style="background: #090514;" title="Deep Cosmic Violet: #090514"></span>
+              <span class="palette-swatch-dot" style="background: #fbbf24;" title="Solar Amber Gold: #fbbf24"></span>
+              <span class="palette-swatch-dot" style="background: #a855f7;" title="Neon Lavender: #a855f7"></span>
+              <span class="palette-swatch-dot" style="background: #00f0ff;" title="Ice Cyan Glow: #00f0ff"></span>
+            </div>
+          </div>
+
+          <button class="btn-theme-activate" onclick="handleSwitchTheme('midnight-gold')">
+            <span>✨ Apply Apex Purple &amp; Gold</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- ==========================================================================
@@ -726,6 +877,10 @@
     <button class="admin-dock-btn" data-tab="tab-services">
       <span style="font-size: 1.2rem;">⚡</span>
       <span>Services</span>
+    </button>
+    <button class="admin-dock-btn" data-tab="tab-themes">
+      <span style="font-size: 1.2rem;">🎭</span>
+      <span>Themes</span>
     </button>
     <button class="admin-dock-btn" data-tab="tab-profile">
       <span style="font-size: 1.2rem;">👤</span>

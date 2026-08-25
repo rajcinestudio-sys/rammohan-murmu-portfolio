@@ -48,6 +48,7 @@ const PORTFOLIO_CATEGORIES = {
 };
 
 const DEFAULT_PORTFOLIO_DATA = {
+  activeTheme: "cyber-dark",
   profile: {
     name: "Rammohan Murmu",
     title: "Creative Graphics & Web Designer | Video Editor",
@@ -69,19 +70,12 @@ const DEFAULT_PORTFOLIO_DATA = {
     aboutImage: "assets/images/avatar.svg",
     resumeLink: "#contact",
     socials: {
-      whatsapp: "https://wa.me/918250550060",
-      behance: "https://www.behance.net/",
-      dribbble: "https://dribbble.com/",
-      instagram: "https://www.instagram.com/",
-      linkedin: "https://www.linkedin.com/",
       youtube: "https://www.youtube.com/@rammohanmurmu",
-      github: "https://github.com/",
-      facebook: "https://www.facebook.com/"
+      facebook: "https://www.facebook.com/",
+      instagram: "https://www.instagram.com/",
+      whatsapp: "https://wa.me/918250550060"
     },
-    customSocials: [
-      { name: "Twitter / X", url: "https://twitter.com/", icon: "🐦" },
-      { name: "Pinterest", url: "https://pinterest.com/", icon: "📌" }
-    ]
+    customSocials: []
   },
   socialHub: {
     youtubeTitle: "Rammohan Murmu - Creative Studio",
@@ -417,10 +411,12 @@ window.PortfolioData = {
         return {
           ...DEFAULT_PORTFOLIO_DATA,
           ...parsed,
+          activeTheme: parsed.activeTheme || DEFAULT_PORTFOLIO_DATA.activeTheme || "cyber-dark",
           profile: { 
             ...DEFAULT_PORTFOLIO_DATA.profile, 
             ...(parsed.profile || {}),
-            customSocials: (parsed.profile && parsed.profile.customSocials) || DEFAULT_PORTFOLIO_DATA.profile.customSocials
+            socials: (parsed.profile && parsed.profile.socials !== undefined) ? parsed.profile.socials : DEFAULT_PORTFOLIO_DATA.profile.socials,
+            customSocials: (parsed.profile && Array.isArray(parsed.profile.customSocials)) ? parsed.profile.customSocials : DEFAULT_PORTFOLIO_DATA.profile.customSocials
           },
           socialHub: {
             ...DEFAULT_PORTFOLIO_DATA.socialHub,
@@ -737,7 +733,19 @@ window.PortfolioData = {
     return true;
   },
 
-  // 6. Security PIN
+  // 6. 3D Theme System
+  getActiveTheme() {
+    return this.get().activeTheme || "cyber-dark";
+  },
+
+  updateActiveTheme(themeId) {
+    const data = this.get();
+    data.activeTheme = themeId;
+    this.save(data);
+    return data.activeTheme;
+  },
+
+  // 7. Security PIN
   updatePin(newPin) {
     const data = this.get();
     data.adminPin = newPin;
@@ -745,7 +753,7 @@ window.PortfolioData = {
     return true;
   },
 
-  // 7. Backup & Export
+  // 8. Backup & Export
   exportJSON() {
     const data = this.get();
     const jsonStr = JSON.stringify(data, null, 2);

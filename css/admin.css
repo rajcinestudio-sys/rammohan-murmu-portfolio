@@ -852,3 +852,281 @@ textarea.form-control-admin {
     padding: 1.25rem;
   }
 }
+
+/* ==========================================================================
+   3D THEME STUDIO & PRESET SELECTOR
+   ========================================================================== */
+
+.theme-studio-header {
+  margin-bottom: 2rem;
+}
+
+.theme-grid-3d {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.8rem;
+  perspective: 1000px;
+}
+
+.theme-card-3d {
+  background: var(--admin-card);
+  border: 2px solid var(--admin-border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.theme-card-3d:hover {
+  transform: translateY(-8px) rotateX(4deg) scale(1.02);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.25);
+}
+
+.theme-card-3d.active {
+  border-color: var(--accent-cyan);
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.08) 0%, rgba(18, 22, 34, 0.95) 100%);
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 15px 40px rgba(6, 182, 212, 0.3);
+}
+
+.theme-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.theme-title-box h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-title-box p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.theme-active-pill {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(6, 182, 212, 0.2);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+}
+
+.theme-card-3d.active .theme-active-pill {
+  display: inline-flex;
+}
+
+/* 3D Visual Preview Simulation Box */
+.theme-preview-box {
+  width: 100%;
+  height: 140px;
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-preview-box.preview-cyber-dark {
+  background: #07080c;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.theme-preview-box.preview-luxury-white {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.theme-preview-box.preview-midnight-gold {
+  background: #090514;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+/* Preview Inner Elements */
+.preview-mini-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-mini-logo {
+  height: 10px;
+  width: 50px;
+  border-radius: 4px;
+}
+
+.preview-cyber-dark .preview-mini-logo {
+  background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+}
+
+.preview-luxury-white .preview-mini-logo {
+  background: linear-gradient(90deg, #6366f1, #0284c7);
+}
+
+.preview-midnight-gold .preview-mini-logo {
+  background: linear-gradient(90deg, #fbbf24, #a855f7);
+}
+
+.preview-mini-pill {
+  height: 8px;
+  width: 24px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.preview-luxury-white .preview-mini-pill {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.preview-midnight-gold .preview-mini-pill {
+  background: rgba(245, 158, 11, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+}
+
+.preview-mini-body {
+  margin-top: 0.5rem;
+}
+
+.preview-mini-title {
+  height: 14px;
+  width: 75%;
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+}
+
+.preview-cyber-dark .preview-mini-title {
+  background: linear-gradient(90deg, #f8fafc 40%, #06b6d4);
+}
+
+.preview-luxury-white .preview-mini-title {
+  background: linear-gradient(90deg, #0f172a 40%, #6366f1);
+}
+
+.preview-midnight-gold .preview-mini-title {
+  background: linear-gradient(90deg, #fbbf24 35%, #a855f7 70%, #00f0ff 100%);
+}
+
+.preview-mini-desc {
+  height: 8px;
+  width: 55%;
+  border-radius: 4px;
+}
+
+.preview-cyber-dark .preview-mini-desc {
+  background: #64748b;
+}
+
+.preview-luxury-white .preview-mini-desc {
+  background: #94a3b8;
+}
+
+.preview-midnight-gold .preview-mini-desc {
+  background: #c084fc;
+  opacity: 0.7;
+}
+
+.preview-mini-btn {
+  height: 18px;
+  width: 80px;
+  border-radius: 6px;
+  align-self: flex-start;
+  margin-top: 0.6rem;
+}
+
+.preview-cyber-dark .preview-mini-btn {
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+}
+
+.preview-luxury-white .preview-mini-btn {
+  background: linear-gradient(135deg, #6366f1, #0284c7);
+}
+
+.preview-midnight-gold .preview-mini-btn {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #a855f7 100%);
+}
+
+/* Palette Swatches */
+.theme-palette-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.3rem;
+}
+
+.theme-palette-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 0.2rem;
+}
+
+.palette-swatch-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Action Button */
+.btn-theme-activate {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+  border: 1px solid var(--admin-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.btn-theme-activate:hover {
+  background: var(--accent-violet);
+  color: #fff;
+  border-color: var(--accent-violet);
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.theme-card-3d.active .btn-theme-activate {
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  color: #07090e;
+  font-weight: 800;
+  cursor: default;
+  box-shadow: 0 4px 18px rgba(6, 182, 212, 0.4);
+}

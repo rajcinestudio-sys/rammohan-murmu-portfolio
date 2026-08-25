@@ -368,6 +368,10 @@ function initTabNavigation() {
     "tab-sync": {
       title: "Backup, Sync & Security",
       desc: "Export data.json for GitHub Pages, restore backups, or change your security PIN."
+    },
+    "tab-themes": {
+      title: "3D Theme Studio & Presets",
+      desc: "Customize and switch your portfolio visual aesthetics with 1-click 3D theme presets."
     }
   };
 
@@ -421,13 +425,54 @@ function loadDashboardData() {
   document.getElementById("dash-youtube-subs").textContent = (data.socialHub && data.socialHub.subscribersCount) || "15.4K+";
   document.getElementById("dash-reviews-count").textContent = allReviews.length;
 
-  // 2. Tables & Managers
+  // 2. Tables, Themes & Managers
   renderProjectsTable(projects);
   renderAdminServices(services);
   loadProfileFormData(data.profile, data.socialHub);
   renderAdminSkills(data.skills || []);
   renderAdminReviews(allReviews);
+  renderAdminThemeCards(data.activeTheme || "cyber-dark");
 }
+
+/* ==========================================================================
+   4.1. 3D THEME STUDIO CONTROLLER
+   ========================================================================== */
+function renderAdminThemeCards(activeTheme) {
+  const currentTheme = activeTheme || (window.PortfolioData ? window.PortfolioData.getActiveTheme() : "cyber-dark");
+  const themeCards = document.querySelectorAll(".theme-card-3d");
+  
+  themeCards.forEach(card => {
+    const cardId = card.id; // e.g. "theme-card-cyber-dark"
+    const themeKey = cardId.replace("theme-card-", "");
+    const btn = card.querySelector(".btn-theme-activate");
+    
+    if (themeKey === currentTheme) {
+      card.classList.add("active");
+      if (btn) btn.innerHTML = "<span>✓ Currently Active Theme</span>";
+    } else {
+      card.classList.remove("active");
+      if (btn) {
+        if (themeKey === "cyber-dark") btn.innerHTML = "<span>✨ Apply Cyber Dark</span>";
+        else if (themeKey === "luxury-white") btn.innerHTML = "<span>✨ Apply Luxury White</span>";
+        else if (themeKey === "midnight-gold") btn.innerHTML = "<span>✨ Apply Apex Purple &amp; Gold</span>";
+      }
+    }
+  });
+}
+
+window.handleSwitchTheme = function(themeId) {
+  if (!window.PortfolioData) return;
+  const active = window.PortfolioData.updateActiveTheme(themeId);
+  renderAdminThemeCards(active);
+  
+  const themeNames = {
+    "cyber-dark": "Cyber Neon Dark",
+    "luxury-white": "Luxury Pearl White",
+    "midnight-gold": "Royal Apex Purple & Gold"
+  };
+  
+  showToast(`🎭 Switched to "${themeNames[themeId] || themeId}" Theme! Live site updated.`);
+};
 
 function renderProjectsTable(projects) {
   const overviewTbody = document.getElementById("overview-projects-table-body");
@@ -998,10 +1043,18 @@ function loadProfileFormData(profile, socialHub) {
     }
 
     const socials = profile.socials || {};
-    document.getElementById("prof-behance").value = socials.behance || "";
-    document.getElementById("prof-dribbble").value = socials.dribbble || "";
-    document.getElementById("prof-instagram").value = socials.instagram || "";
-    document.getElementById("prof-linkedin").value = socials.linkedin || "";
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val || "";
+    };
+    setVal("prof-youtube", socials.youtube || (socialHub && socialHub.youtubeUrl) || "");
+    setVal("prof-facebook", socials.facebook || "");
+    setVal("prof-instagram", socials.instagram || (socialHub && socialHub.instagramUrl) || "");
+    setVal("prof-linkedin", socials.linkedin || "");
+    setVal("prof-twitter", socials.twitter || socials.x || "");
+    setVal("prof-behance", socials.behance || (socialHub && socialHub.behanceUrl) || "");
+    setVal("prof-dribbble", socials.dribbble || (socialHub && socialHub.dribbbleUrl) || "");
+    setVal("prof-github", socials.github || "");
 
     renderCustomSocialRows(profile.customSocials || []);
   }
@@ -1009,7 +1062,7 @@ function loadProfileFormData(profile, socialHub) {
   if (socialHub) {
     document.getElementById("hub-yt-title").value = socialHub.youtubeTitle || "";
     document.getElementById("hub-yt-handle").value = socialHub.youtubeHandle || "";
-    document.getElementById("hub-yt-url").value = socialHub.youtubeUrl || "";
+    document.getElementById("hub-yt-url").value = socialHub.youtubeUrl || (profile && profile.socials && profile.socials.youtube) || "";
     document.getElementById("hub-yt-subs").value = socialHub.subscribersCount || "15.4K+";
     document.getElementById("hub-yt-video").value = socialHub.featuredVideoEmbed || "";
   }
@@ -1072,42 +1125,62 @@ window.handleSaveProfile = function(event) {
   const aboutUrlVal = aboutUrlInput ? aboutUrlInput.value.trim() : "";
   const finalAboutImg = aboutUrlVal || currentAboutImage || "assets/images/avatar.svg";
 
+  const getVal = (id) => {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : "";
+  };
+
+  const socials = {};
+  const ytVal = getVal("prof-youtube") || getVal("hub-yt-url");
+  if (ytVal) socials.youtube = ytVal;
+  const fbVal = getVal("prof-facebook");
+  if (fbVal) socials.facebook = fbVal;
+  const instaVal = getVal("prof-instagram");
+  if (instaVal) socials.instagram = instaVal;
+  const liVal = getVal("prof-linkedin");
+  if (liVal) socials.linkedin = liVal;
+  const twVal = getVal("prof-twitter");
+  if (twVal) socials.twitter = twVal;
+  const beVal = getVal("prof-behance");
+  if (beVal) socials.behance = beVal;
+  const drVal = getVal("prof-dribbble");
+  if (drVal) socials.dribbble = drVal;
+  const ghVal = getVal("prof-github");
+  if (ghVal) socials.github = ghVal;
+
+  const rawWa = getVal("prof-whatsapp");
+  if (rawWa) {
+    const cleanWa = rawWa.replace(/\D/g, "");
+    socials.whatsapp = `https://wa.me/91${cleanWa}`;
+  }
+
   const profileUpdates = {
-    name: document.getElementById("prof-name").value.trim(),
-    title: document.getElementById("prof-title").value.trim(),
-    tagline: document.getElementById("prof-tagline").value.trim(),
-    fullBio: document.getElementById("prof-fullbio").value.trim(),
+    name: getVal("prof-name"),
+    title: getVal("prof-title"),
+    tagline: getVal("prof-tagline"),
+    fullBio: getVal("prof-fullbio"),
     aboutImage: finalAboutImg,
     avatar: finalAboutImg,
-    phone: document.getElementById("prof-phone").value.trim(),
-    displayPhone: "+91 " + document.getElementById("prof-phone").value.trim(),
-    whatsapp: document.getElementById("prof-whatsapp").value.trim(),
-    displayWhatsapp: "+91 " + document.getElementById("prof-whatsapp").value.trim(),
-    email: document.getElementById("prof-email").value.trim(),
-    location: document.getElementById("prof-location").value.trim(),
-    socials: {
-      whatsapp: "https://wa.me/91" + document.getElementById("prof-whatsapp").value.trim(),
-      behance: document.getElementById("prof-behance").value.trim(),
-      dribbble: document.getElementById("prof-dribbble").value.trim(),
-      instagram: document.getElementById("prof-instagram").value.trim(),
-      linkedin: document.getElementById("prof-linkedin").value.trim(),
-      youtube: document.getElementById("hub-yt-url").value.trim(),
-      github: "https://github.com/",
-      facebook: "https://facebook.com/"
-    },
+    phone: getVal("prof-phone"),
+    displayPhone: "+91 " + getVal("prof-phone"),
+    whatsapp: rawWa,
+    displayWhatsapp: "+91 " + rawWa,
+    email: getVal("prof-email"),
+    location: getVal("prof-location"),
+    socials,
     customSocials
   };
 
   const socialHubUpdates = {
-    youtubeTitle: document.getElementById("hub-yt-title").value.trim(),
-    youtubeHandle: document.getElementById("hub-yt-handle").value.trim(),
-    youtubeUrl: document.getElementById("hub-yt-url").value.trim(),
-    subscribersCount: document.getElementById("hub-yt-subs").value.trim(),
-    featuredVideoEmbed: document.getElementById("hub-yt-video").value.trim(),
-    instagramUrl: document.getElementById("prof-instagram").value.trim(),
-    behanceUrl: document.getElementById("prof-behance").value.trim(),
-    dribbbleUrl: document.getElementById("prof-dribbble").value.trim(),
-    whatsappUrl: "https://wa.me/91" + document.getElementById("prof-whatsapp").value.trim()
+    youtubeTitle: getVal("hub-yt-title"),
+    youtubeHandle: getVal("hub-yt-handle"),
+    youtubeUrl: ytVal,
+    subscribersCount: getVal("hub-yt-subs"),
+    featuredVideoEmbed: getVal("hub-yt-video"),
+    instagramUrl: instaVal,
+    behanceUrl: beVal,
+    dribbbleUrl: drVal,
+    whatsappUrl: socials.whatsapp || ""
   };
 
   window.PortfolioData.updateProfile(profileUpdates);

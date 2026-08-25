@@ -4,7 +4,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
-:root {
+/* ==========================================================================
+   THEME 1: CYBER DARK (DEFAULT 3D NEON OBSIDIAN)
+   ========================================================================== */
+:root,
+[data-theme="cyber-dark"],
+:root[data-theme="cyber-dark"] {
   /* Color Palette */
   --bg-dark: #07080c;
   --bg-surface: #0e111a;
@@ -55,6 +60,99 @@
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   THEME 2: LUXURY WHITE (PURE 3D FROSTED LIGHT MODE)
+   ========================================================================== */
+[data-theme="luxury-white"],
+:root[data-theme="luxury-white"] {
+  --bg-dark: #f5f7fc;
+  --bg-surface: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-card-hover: #ffffff;
+  --bg-glass: rgba(15, 23, 42, 0.03);
+  --bg-glass-heavy: rgba(255, 255, 255, 0.96);
+
+  --border-subtle: rgba(15, 23, 42, 0.09);
+  --border-light: rgba(15, 23, 42, 0.16);
+  --border-glow: rgba(99, 102, 241, 0.35);
+  --border-cyan: rgba(2, 132, 199, 0.35);
+
+  --accent-violet: #6366f1;
+  --accent-purple: #7c3aed;
+  --accent-cyan: #0284c7;
+  --accent-blue: #2563eb;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+  --accent-rose: #e11d48;
+  --accent-whatsapp: #16a34a;
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+
+  --grad-primary: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #0284c7 100%);
+  --grad-purple-pink: linear-gradient(135deg, #db2777 0%, #7c3aed 100%);
+  --grad-cyan-blue: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  --grad-amber-orange: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+  --grad-dark-card: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 245, 249, 0.92) 100%);
+  --grad-service-card: linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(248, 250, 252, 0.95) 100%);
+
+  --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.09);
+  --shadow-lg: 0 20px 45px rgba(15, 23, 42, 0.12);
+  --glow-violet: 0 10px 30px rgba(99, 102, 241, 0.18);
+  --glow-cyan: 0 10px 30px rgba(2, 132, 199, 0.18);
+  --glow-whatsapp: 0 8px 25px rgba(22, 163, 74, 0.25);
+}
+
+/* ==========================================================================
+   THEME 3: ROYAL APEX PURPLE & GOLD (ESPORTS 3D EDITION)
+   ========================================================================== */
+[data-theme="midnight-gold"],
+[data-theme="apex-gold-purple"],
+:root[data-theme="midnight-gold"] {
+  --bg-dark: #090514;
+  --bg-surface: #120a28;
+  --bg-card: rgba(22, 13, 48, 0.84);
+  --bg-card-hover: rgba(32, 19, 70, 0.95);
+  --bg-glass: rgba(168, 85, 247, 0.05);
+  --bg-glass-heavy: rgba(18, 10, 40, 0.95);
+
+  --border-subtle: rgba(245, 158, 11, 0.22);
+  --border-light: rgba(168, 85, 247, 0.32);
+  --border-glow: rgba(245, 158, 11, 0.65);
+  --border-cyan: rgba(0, 240, 255, 0.5);
+
+  --accent-violet: #a855f7;
+  --accent-purple: #c084fc;
+  --accent-cyan: #00f0ff;
+  --accent-blue: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-amber: #fbbf24;
+  --accent-gold: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-whatsapp: #25d366;
+
+  --text-main: #fffdf7;
+  --text-muted: #cbd5e1;
+  --text-dim: #94a3b8;
+
+  --grad-primary: linear-gradient(135deg, #fbbf24 0%, #f59e0b 40%, #a855f7 100%);
+  --grad-purple-pink: linear-gradient(135deg, #a855f7 0%, #f59e0b 100%);
+  --grad-cyan-blue: linear-gradient(135deg, #00f0ff 0%, #a855f7 100%);
+  --grad-amber-orange: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+  --grad-dark-card: linear-gradient(180deg, rgba(30, 18, 66, 0.88) 0%, rgba(13, 7, 30, 0.97) 100%);
+  --grad-service-card: linear-gradient(180deg, rgba(28, 16, 62, 0.92) 0%, rgba(12, 6, 26, 0.98) 100%);
+
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 30px rgba(9, 5, 20, 0.7);
+  --shadow-lg: 0 20px 50px rgba(9, 5, 20, 0.9);
+  --glow-violet: 0 0 35px rgba(168, 85, 247, 0.45);
+  --glow-cyan: 0 0 35px rgba(0, 240, 255, 0.45);
+  --glow-gold: 0 0 35px rgba(245, 158, 11, 0.55);
+  --glow-whatsapp: 0 0 25px rgba(37, 211, 102, 0.4);
 }
 
 /* ==========================================================================
@@ -276,6 +374,195 @@ body {
   position: relative;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Global smooth transition for theme elements */
+.main-header, .main-footer, .service-card, .portfolio-card, .about-portrait-img-box, .contact-card-item, .contact-form-box, .stat-card-3d, .review-card-3d, .modal-container, .hero-stats-badge-3d, .mobile-bottom-dock {
+  transition: background 0.35s ease, background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Theme 2: Luxury White mode overrides */
+html[data-theme="luxury-white"],
+[data-theme="luxury-white"] {
+  color-scheme: light;
+}
+
+html[data-theme="luxury-white"] .section-title {
+  color: #0f172a;
+}
+
+html[data-theme="luxury-white"] .hero-title-main {
+  color: #0f172a;
+}
+
+html[data-theme="luxury-white"] .hero-badge-pill {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.25);
+  color: #4f46e5;
+}
+
+html[data-theme="luxury-white"] .section-tag {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.25);
+  color: #4f46e5;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.12);
+}
+
+html[data-theme="luxury-white"] .main-header {
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="luxury-white"] .main-header.scrolled {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+html[data-theme="luxury-white"] .nav-links a {
+  color: #475569;
+}
+
+html[data-theme="luxury-white"] .nav-links a:hover,
+html[data-theme="luxury-white"] .nav-links a.active {
+  color: #0f172a;
+}
+
+html[data-theme="luxury-white"] .hamburger-btn span {
+  background: #0f172a;
+}
+
+html[data-theme="luxury-white"] .mobile-nav-drawer {
+  background: rgba(255, 255, 255, 0.98);
+  border-left-color: rgba(0, 0, 0, 0.08);
+  box-shadow: -15px 0 40px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="luxury-white"] .service-card,
+html[data-theme="luxury-white"] .portfolio-card,
+html[data-theme="luxury-white"] .about-portrait-img-box,
+html[data-theme="luxury-white"] .contact-card-item,
+html[data-theme="luxury-white"] .contact-form-box,
+html[data-theme="luxury-white"] .stat-card-3d,
+html[data-theme="luxury-white"] .review-card-3d {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-md);
+}
+
+html[data-theme="luxury-white"] .service-card:hover,
+html[data-theme="luxury-white"] .portfolio-card:hover,
+html[data-theme="luxury-white"] .stat-card-3d:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="luxury-white"] .form-control {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.15) !important;
+}
+
+html[data-theme="luxury-white"] .form-control:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+html[data-theme="luxury-white"] .btn-glass-hero {
+  background: rgba(15, 23, 42, 0.04);
+  color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+}
+
+html[data-theme="luxury-white"] .btn-glass-hero:hover {
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+html[data-theme="luxury-white"] .main-footer {
+  background: #edf2f7;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="luxury-white"] .footer-bottom-bar {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="luxury-white"] .mobile-bottom-dock {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="luxury-white"] .dock-item {
+  color: #64748b;
+}
+
+html[data-theme="luxury-white"] .dock-item.active,
+html[data-theme="luxury-white"] .dock-item:hover {
+  color: #4f46e5;
+}
+
+html[data-theme="luxury-white"] .modal-container {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+}
+
+html[data-theme="luxury-white"] .modal-header,
+html[data-theme="luxury-white"] .modal-footer {
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="luxury-white"] .skill-pill-3d {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(15, 23, 42, 0.09);
+  color: #0f172a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Theme 3: Royal Apex Purple & Gold (Esports 3D) overrides */
+html[data-theme="midnight-gold"] .section-tag,
+html[data-theme="apex-gold-purple"] .section-tag {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.28);
+}
+
+html[data-theme="midnight-gold"] .hero-badge-pill,
+html[data-theme="apex-gold-purple"] .hero-badge-pill {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+}
+
+html[data-theme="midnight-gold"] .section-title .highlight-text,
+html[data-theme="apex-gold-purple"] .section-title .highlight-text {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 40%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.4));
+}
+
+html[data-theme="midnight-gold"] .service-card,
+html[data-theme="midnight-gold"] .portfolio-card,
+html[data-theme="midnight-gold"] .stat-card-3d,
+html[data-theme="midnight-gold"] .about-portrait-img-box,
+html[data-theme="midnight-gold"] .contact-card-item,
+html[data-theme="midnight-gold"] .contact-form-box {
+  background: var(--bg-card);
+  border: 1.5px solid rgba(168, 85, 247, 0.35);
+  box-shadow: 0 15px 40px rgba(9, 5, 20, 0.7), 0 0 25px rgba(245, 158, 11, 0.2);
+}
+
+html[data-theme="midnight-gold"] .service-card:hover,
+html[data-theme="midnight-gold"] .portfolio-card:hover,
+html[data-theme="midnight-gold"] .stat-card-3d:hover {
+  border-color: #fbbf24;
+  box-shadow: 0 20px 45px rgba(9, 5, 20, 0.8), 0 0 30px rgba(245, 158, 11, 0.35);
 }
 
 /* Custom Scrollbar */
@@ -1260,6 +1547,10 @@ img, svg {
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .about-portrait-img-box {
@@ -2355,26 +2646,117 @@ textarea.form-control {
 }
 
 .social-icon-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-subtle);
-  display: flex;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
   color: var(--text-muted);
-  transition: all var(--transition-fast);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-icon-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  transition: transform 0.25s ease, fill 0.25s ease;
 }
 
 .social-icon-btn:hover {
-  background: var(--grad-primary);
+  color: #ffffff;
+  transform: translateY(-3px) scale(1.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.social-icon-btn:hover svg {
+  transform: scale(1.1);
+}
+
+/* Brand specific hover themes */
+.social-icon-btn.brand-youtube:hover {
+  background: #ff0000;
+  box-shadow: 0 4px 16px rgba(255, 0, 0, 0.45);
   color: #fff;
-  border-color: transparent;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+}
+
+.social-icon-btn.brand-facebook:hover {
+  background: #1877f2;
+  box-shadow: 0 4px 16px rgba(24, 119, 242, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-instagram:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  box-shadow: 0 4px 16px rgba(225, 48, 108, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-whatsapp:hover {
+  background: #25d366;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-linkedin:hover {
+  background: #0a66c2;
+  box-shadow: 0 4px 16px rgba(10, 102, 194, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-twitter:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.social-icon-btn.brand-behance:hover {
+  background: #1769ff;
+  box-shadow: 0 4px 16px rgba(23, 105, 255, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-dribbble:hover {
+  background: #ea4c89;
+  box-shadow: 0 4px 16px rgba(234, 76, 137, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-github:hover {
+  background: #24292e;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+.social-icon-btn.brand-telegram:hover {
+  background: #229ed9;
+  box-shadow: 0 4px 16px rgba(34, 158, 217, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-pinterest:hover {
+  background: #bd081c;
+  box-shadow: 0 4px 16px rgba(189, 8, 28, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-discord:hover {
+  background: #5865f2;
+  box-shadow: 0 4px 16px rgba(88, 101, 242, 0.45);
+  color: #fff;
+}
+
+.social-icon-btn.brand-generic:hover {
+  background: var(--grad-primary);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+  color: #fff;
 }
 
 /* Highlighted Green WhatsApp Button */

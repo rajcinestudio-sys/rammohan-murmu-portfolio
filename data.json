@@ -1,4 +1,5 @@
 {
+  "activeTheme": "cyber-dark",
   "profile": {
     "name": "Rammohan Murmu",
     "title": "Creative Graphics & Web Designer | Video Editor",
@@ -20,19 +21,12 @@
     "aboutImage": "assets/images/avatar.svg",
     "resumeLink": "#contact",
     "socials": {
-      "whatsapp": "https://wa.me/918250550060",
-      "behance": "https://www.behance.net/",
-      "dribbble": "https://dribbble.com/",
-      "instagram": "https://www.instagram.com/",
-      "linkedin": "https://www.linkedin.com/",
       "youtube": "https://www.youtube.com/@rammohanmurmu",
-      "github": "https://github.com/",
-      "facebook": "https://www.facebook.com/"
+      "facebook": "https://www.facebook.com/",
+      "instagram": "https://www.instagram.com/",
+      "whatsapp": "https://wa.me/918250550060"
     },
-    "customSocials": [
-      { "name": "Twitter / X", "url": "https://twitter.com/", "icon": "🐦" },
-      { "name": "Pinterest", "url": "https://pinterest.com/", "icon": "📌" }
-    ]
+    "customSocials": []
   },
   "socialHub": {
     "youtubeTitle": "Rammohan Murmu - Creative Studio",
