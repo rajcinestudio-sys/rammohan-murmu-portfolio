@@ -472,3 +472,126 @@ window.supabaseUploadFile = async function(file, customPath) {
     return { success: false, error: e.message };
   }
 };
+
+/**
+ * Delete a File from Supabase Storage by its path
+ * filePath should be the path returned by supabaseUploadFile() (e.g. "uploads/123_abc.jpg")
+ */
+window.supabaseDeleteFile = async function(filePath) {
+  const client = window.getSupabaseClient();
+  if (!client) return { success: false, error: "Supabase not configured" };
+  if (!filePath) return { success: false, error: "No file path provided" };
+
+  const cfg = getSupabaseConfig();
+  try {
+    const { error } = await client.storage
+      .from(cfg.storageBucket)
+      .remove([filePath]);
+
+    if (error) {
+      console.warn("[Supabase Storage] Delete error:", error.message);
+      return { success: false, error: error.message };
+    }
+
+    console.log("[Supabase Storage] Deleted:", filePath);
+    return { success: true };
+  } catch (e) {
+    console.error("[Supabase Storage] Exception deleting file:", e);
+    return { success: false, error: e.message };
+  }
+};
+
+/**
+ * Extract Supabase Storage file path from a public URL
+ * e.g. "https://xxx.supabase.co/storage/v1/object/public/portfolio-media/uploads/abc.jpg"
+ * returns "uploads/abc.jpg"
+ */
+window.supabaseExtractFilePath = function(publicUrl) {
+  if (!publicUrl || typeof publicUrl !== "string") return null;
+  if (publicUrl.startsWith("data:")) return null; // base64 — skip
+
+  const cfg = getSupabaseConfig();
+  const marker = `/storage/v1/object/public/${cfg.storageBucket}/`;
+  const idx = publicUrl.indexOf(marker);
+  if (idx === -1) return null;
+  return publicUrl.substring(idx + marker.length);
+};
+
+/**
+ * Delete multiple Supabase Storage files from an array of public URLs
+ * Automatically skips base64 / non-storage URLs
+ */
+window.supabaseDeleteFilesFromUrls = async function(urls) {
+  if (!Array.isArray(urls) || urls.length === 0) return;
+  const paths = urls
+    .map(u => window.supabaseExtractFilePath(u))
+    .filter(Boolean);
+
+  if (paths.length === 0) return;
+
+  const client = window.getSupabaseClient();
+  if (!client) return;
+  const cfg = getSupabaseConfig();
+
+  try {
+    const { error } = await client.storage
+      .from(cfg.storageBucket)
+      .remove(paths);
+
+    if (error) {
+      console.warn("[Supabase Storage] Bulk delete error:", error.message);
+    } else {
+      console.log(`[Supabase Storage] Deleted ${paths.length} files:`, paths);
+    }
+  } catch (e) {
+    console.error("[Supabase Storage] Exception in bulk delete:", e);
+  }
+};
+
+/**
+ * Get Supabase Storage usage — lists all files in bucket and sums their sizes
+ * Returns: { success, usedBytes, usedMB, fileCount, limitMB, percentUsed }
+ * NOTE: Supabase Free plan = 1 GB storage limit
+ */
+window.supabaseGetStorageUsage = async function() {
+  const client = window.getSupabaseClient();
+  if (!client) return { success: false, error: "Supabase not configured" };
+
+  const cfg = getSupabaseConfig();
+  const LIMIT_BYTES = 1 * 1024 * 1024 * 1024; // 1 GB free plan limit
+
+  try {
+    // List all files recursively from uploads/ folder
+    const { data, error } = await client.storage
+      .from(cfg.storageBucket)
+      .list("uploads", {
+        limit: 1000,
+        offset: 0
+      });
+
+    if (error) {
+      // If bucket doesn't exist yet or access denied
+      console.warn("[Supabase Storage] List error:", error.message);
+      return { success: false, error: error.message };
+    }
+
+    const files = data || [];
+    const usedBytes = files.reduce((sum, f) => sum + (f.metadata?.size || 0), 0);
+    const usedMB = (usedBytes / (1024 * 1024)).toFixed(2);
+    const limitMB = (LIMIT_BYTES / (1024 * 1024)).toFixed(0);
+    const percentUsed = Math.min(100, ((usedBytes / LIMIT_BYTES) * 100)).toFixed(1);
+
+    return {
+      success: true,
+      usedBytes,
+      usedMB: parseFloat(usedMB),
+      fileCount: files.length,
+      limitMB: parseInt(limitMB),
+      limitGB: 1,
+      percentUsed: parseFloat(percentUsed)
+    };
+  } catch (e) {
+    console.error("[Supabase Storage] Exception getting usage:", e);
+    return { success: false, error: e.message };
+  }
+};

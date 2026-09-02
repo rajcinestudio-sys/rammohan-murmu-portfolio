@@ -85,6 +85,14 @@ ON storage.objects
 FOR DELETE 
 USING (bucket_id = 'portfolio-media');
 
+-- Allow updating/overwriting existing objects (needed for profile photo upsert)
+DROP POLICY IF EXISTS "Public / Auth Media Update" ON storage.objects;
+CREATE POLICY "Public / Auth Media Update" 
+ON storage.objects 
+FOR UPDATE 
+USING (bucket_id = 'portfolio-media')
+WITH CHECK (bucket_id = 'portfolio-media');
+
 -- 6. Trigger to automatically update `updated_at` column timestamp
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$

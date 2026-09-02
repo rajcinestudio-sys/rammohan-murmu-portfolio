@@ -441,6 +441,73 @@ function loadDashboardData() {
   renderAdminSkills(data.skills || []);
   renderAdminReviews(allReviews);
   renderAdminThemeCards(data.activeTheme || "cyber-dark");
+
+  // 3. Refresh storage usage widget
+  refreshStorageWidget();
+}
+
+/**
+ * Refresh the Supabase Storage Usage widget on the dashboard
+ */
+async function refreshStorageWidget() {
+  const el = document.getElementById("dash-storage-widget");
+  if (!el) return;
+
+  if (!window.isSupabaseConfigured || !window.isSupabaseConfigured()) {
+    el.innerHTML = `
+      <div class="stat-widget-icon" style="background: rgba(100,116,139,0.15); color: #64748b;">📦</div>
+      <div class="stat-widget-info">
+        <h3 style="font-size: 1rem; color: #64748b;">N/A</h3>
+        <p>Supabase Storage</p>
+        <p style="font-size: 0.72rem; color: #475569; margin-top: 0.15rem;">Configure Supabase first</p>
+      </div>`;
+    return;
+  }
+
+  // Loading state
+  el.innerHTML = `
+    <div class="stat-widget-icon" style="background: rgba(6,182,212,0.15); color: var(--accent-cyan);">📦</div>
+    <div class="stat-widget-info">
+      <h3 style="font-size: 1rem;">Loading...</h3>
+      <p>Supabase Storage</p>
+    </div>`;
+
+  if (typeof window.supabaseGetStorageUsage !== "function") return;
+  const usage = await window.supabaseGetStorageUsage();
+
+  if (!usage.success) {
+    el.innerHTML = `
+      <div class="stat-widget-icon" style="background: rgba(239,68,68,0.15); color: #ef4444;">📦</div>
+      <div class="stat-widget-info">
+        <h3 style="font-size: 0.9rem; color: #ef4444;">Error</h3>
+        <p>Supabase Storage</p>
+        <p style="font-size: 0.7rem; color: #ef4444; margin-top: 0.1rem;">${usage.error || 'Check bucket settings'}</p>
+      </div>`;
+    return;
+  }
+
+  const pct = usage.percentUsed;
+  const usedMB = usage.usedMB.toFixed(1);
+  const color = pct >= 90 ? "#ef4444" : pct >= 70 ? "#f59e0b" : "#10b981";
+  const barGrad = pct >= 90
+    ? "linear-gradient(90deg, #ef4444, #dc2626)"
+    : pct >= 70
+    ? "linear-gradient(90deg, #f59e0b, #d97706)"
+    : "linear-gradient(90deg, #10b981, #06b6d4)";
+
+  el.innerHTML = `
+    <div class="stat-widget-icon" style="background: rgba(16,185,129,0.15); color: ${color};">📦</div>
+    <div class="stat-widget-info" style="width: 100%;">
+      <h3 style="color: ${color}; font-size: 1rem;">${usedMB} MB <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">/ 1 GB</span></h3>
+      <p>Supabase Storage</p>
+      <div style="margin-top: 0.4rem; background: rgba(255,255,255,0.06); border-radius: 99px; height: 5px; overflow: hidden; width: 100%;">
+        <div style="height: 100%; width: ${pct}%; background: ${barGrad}; border-radius: 99px; transition: width 0.6s;"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.7rem; color: var(--text-dim);">
+        <span>${pct}% used • ${usage.fileCount} file(s)</span>
+        <button onclick="refreshStorageWidget()" style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 0.7rem; padding: 0;">🔄 Refresh</button>
+      </div>
+    </div>`;
 }
 
 /* ==========================================================================
@@ -606,21 +673,40 @@ function renderServiceImagesPreview() {
   `).join("");
 }
 
-window.handleServiceImagesUpload = function(event) {
+window.handleServiceImagesUpload = async function(event) {
   const files = Array.from(event.target.files);
   if (!files || files.length === 0) return;
 
-  let loadedCount = 0;
-  files.forEach(file => {
-    compressImageFile(file, 1000, 600, 0.85, function(compressedUrl) {
-      currentServiceImages.push(compressedUrl);
-      loadedCount++;
-      if (loadedCount === files.length) {
-        renderServiceImagesPreview();
-        showToast(`📸 Added ${files.length} showcase banner(s)!`);
+  const useStorage = (typeof window.supabaseUploadFile === "function" && window.isSupabaseConfigured());
+
+  if (useStorage) {
+    showToast(`⏳ Uploading ${files.length} service image(s) to Supabase Storage...`);
+    let uploaded = 0;
+    for (const file of files) {
+      const res = await window.supabaseUploadFile(file);
+      if (res.success) {
+        currentServiceImages.push(res.url);
+        uploaded++;
+      } else {
+        showToast(`⚠️ Upload failed for ${file.name}: ${res.error}`);
       }
+    }
+    renderServiceImagesPreview();
+    if (uploaded > 0) showToast(`✅ ${uploaded} service image(s) uploaded to Supabase Storage!`);
+    refreshStorageWidget();
+  } else {
+    let loadedCount = 0;
+    files.forEach(file => {
+      compressImageFile(file, 1000, 600, 0.85, function(compressedUrl) {
+        currentServiceImages.push(compressedUrl);
+        loadedCount++;
+        if (loadedCount === files.length) {
+          renderServiceImagesPreview();
+          showToast(`📸 Added ${files.length} showcase banner(s)!`);
+        }
+      });
     });
-  });
+  }
 };
 
 window.addServiceImageFromUrl = function() {
@@ -634,9 +720,17 @@ window.addServiceImageFromUrl = function() {
   }
 };
 
-window.removeServiceImage = function(index) {
-  currentServiceImages.splice(index, 1);
+window.removeServiceImage = async function(index) {
+  const removed = currentServiceImages.splice(index, 1)[0];
   renderServiceImagesPreview();
+  // Delete from Supabase Storage if it's a storage URL
+  if (removed && typeof window.supabaseExtractFilePath === "function") {
+    const filePath = window.supabaseExtractFilePath(removed);
+    if (filePath && typeof window.supabaseDeleteFile === "function") {
+      await window.supabaseDeleteFile(filePath);
+      refreshStorageWidget();
+    }
+  }
 };
 
 window.openAddServiceModal = function() {
@@ -740,14 +834,25 @@ window.handleSaveService = function(event) {
   loadDashboardData();
 };
 
-window.handleDeleteService = function(id) {
+window.handleDeleteService = async function(id) {
   const service = window.PortfolioData.getServiceById(id);
   if (!service) return;
 
   if (confirm(`Are you sure you want to delete "${service.title}"?`)) {
+    // Collect all service image URLs
+    const allUrls = [];
+    if (service.images && service.images.length > 0) allUrls.push(...service.images);
+    else if (service.image) allUrls.push(service.image);
+
+    // Delete from Supabase Storage
+    if (typeof window.supabaseDeleteFilesFromUrls === "function") {
+      await window.supabaseDeleteFilesFromUrls(allUrls);
+    }
+
     window.PortfolioData.deleteService(id);
-    showToast("🗑️ Service deleted from database.");
+    showToast("🗑️ Service + Storage files deleted!");
     loadDashboardData();
+    refreshStorageWidget();
   }
 };
 
@@ -845,23 +950,45 @@ window.closeProjectModal = function() {
   document.getElementById("project-edit-modal").style.display = "none";
 };
 
-// Handle Multi-file Upload
-window.handleMultipleImageUpload = function(event) {
+// Handle Multi-file Upload — uploads to Supabase Storage if configured, else fallback to base64
+window.handleMultipleImageUpload = async function(event) {
   const files = Array.from(event.target.files);
   if (!files || files.length === 0) return;
 
-  let loadedCount = 0;
-  files.forEach(file => {
-    compressImageFile(file, 1200, 800, 0.85, function(base64Url) {
-      currentProjectImages.push(base64Url);
-      if (!currentThumbnailImage) currentThumbnailImage = base64Url;
-      loadedCount++;
-      if (loadedCount === files.length) {
-        renderProjectImagesPreview();
-        showToast(`📸 Added ${files.length} images!`);
+  const useStorage = (typeof window.supabaseUploadFile === "function" && window.isSupabaseConfigured());
+
+  if (useStorage) {
+    showToast(`⏳ Uploading ${files.length} image(s) to Supabase Storage...`);
+    let uploaded = 0;
+    for (const file of files) {
+      const res = await window.supabaseUploadFile(file);
+      if (res.success) {
+        currentProjectImages.push(res.url);
+        if (!currentThumbnailImage) currentThumbnailImage = res.url;
+        uploaded++;
+      } else {
+        showToast(`⚠️ Upload failed for ${file.name}: ${res.error}`);
       }
+    }
+    renderProjectImagesPreview();
+    if (uploaded > 0) showToast(`✅ ${uploaded} image(s) uploaded to Supabase Storage!`);
+    // Refresh storage usage widget
+    refreshStorageWidget();
+  } else {
+    // Fallback: base64 (offline / Supabase not configured)
+    let loadedCount = 0;
+    files.forEach(file => {
+      compressImageFile(file, 1200, 800, 0.85, function(base64Url) {
+        currentProjectImages.push(base64Url);
+        if (!currentThumbnailImage) currentThumbnailImage = base64Url;
+        loadedCount++;
+        if (loadedCount === files.length) {
+          renderProjectImagesPreview();
+          showToast(`📸 Added ${files.length} images (base64 mode)!`);
+        }
+      });
     });
-  });
+  }
 };
 
 window.handleVideoFileUpload = function(event) {
@@ -895,12 +1022,20 @@ window.setAsThumbnail = function(imgUrl) {
   showToast("⭐ Set as main thumbnail/banner!");
 };
 
-window.removeProjectImage = function(index) {
+window.removeProjectImage = async function(index) {
   const removed = currentProjectImages.splice(index, 1)[0];
   if (currentThumbnailImage === removed) {
     currentThumbnailImage = currentProjectImages[0] || "";
   }
   renderProjectImagesPreview();
+  // Delete from Supabase Storage if it's a storage URL
+  if (removed && typeof window.supabaseExtractFilePath === "function") {
+    const filePath = window.supabaseExtractFilePath(removed);
+    if (filePath && typeof window.supabaseDeleteFile === "function") {
+      await window.supabaseDeleteFile(filePath);
+      refreshStorageWidget();
+    }
+  }
 };
 
 function renderProjectImagesPreview() {
@@ -993,14 +1128,25 @@ window.handleSaveProject = function(event) {
   loadDashboardData();
 };
 
-window.handleDeleteProject = function(id) {
+window.handleDeleteProject = async function(id) {
   const project = window.PortfolioData.getProjectById(id);
   if (!project) return;
 
   if (confirm(`Are you sure you want to completely delete "${project.title}" from your portfolio database?`)) {
+    // Collect all image URLs for this project
+    const allUrls = [];
+    if (project.images && project.images.length > 0) allUrls.push(...project.images);
+    else if (project.image) allUrls.push(project.image);
+
+    // Delete from Supabase Storage (storage URLs only, base64 is skipped)
+    if (typeof window.supabaseDeleteFilesFromUrls === "function") {
+      await window.supabaseDeleteFilesFromUrls(allUrls);
+    }
+
     window.PortfolioData.deleteProject(id);
-    showToast("🗑️ Project completely deleted from database.");
+    showToast("🗑️ Project + Storage files deleted!");
     loadDashboardData();
+    refreshStorageWidget();
   }
 };
 
@@ -1009,18 +1155,43 @@ window.handleDeleteProject = function(id) {
    ========================================================================== */
 let currentAboutImage = "assets/images/avatar.svg";
 
-window.handleAboutImageUpload = function(event) {
+window.handleAboutImageUpload = async function(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  compressImageFile(file, 800, 800, 0.85, function(compressedDataUrl) {
-    currentAboutImage = compressedDataUrl;
-    const preview = document.getElementById("prof-about-img-preview");
-    if (preview) preview.src = currentAboutImage;
-    const urlInput = document.getElementById("prof-about-img-url");
-    if (urlInput) urlInput.value = "";
-    showToast("📸 About section photo loaded & optimized!");
-  });
+  const useStorage = (typeof window.supabaseUploadFile === "function" && window.isSupabaseConfigured());
+
+  if (useStorage) {
+    showToast("⏳ Uploading profile photo to Supabase Storage...");
+    const res = await window.supabaseUploadFile(file, `profile/about_${Date.now()}.${file.name.split('.').pop()}`);
+    if (res.success) {
+      currentAboutImage = res.url;
+      const preview = document.getElementById("prof-about-img-preview");
+      if (preview) preview.src = currentAboutImage;
+      const urlInput = document.getElementById("prof-about-img-url");
+      if (urlInput) urlInput.value = res.url;
+      showToast("✅ Profile photo uploaded to Supabase Storage!");
+      refreshStorageWidget();
+    } else {
+      showToast(`⚠️ Upload failed: ${res.error}. Using local mode.`);
+      compressImageFile(file, 800, 800, 0.85, function(compressedDataUrl) {
+        currentAboutImage = compressedDataUrl;
+        const preview = document.getElementById("prof-about-img-preview");
+        if (preview) preview.src = currentAboutImage;
+        const urlInput = document.getElementById("prof-about-img-url");
+        if (urlInput) urlInput.value = "";
+      });
+    }
+  } else {
+    compressImageFile(file, 800, 800, 0.85, function(compressedDataUrl) {
+      currentAboutImage = compressedDataUrl;
+      const preview = document.getElementById("prof-about-img-preview");
+      if (preview) preview.src = currentAboutImage;
+      const urlInput = document.getElementById("prof-about-img-url");
+      if (urlInput) urlInput.value = "";
+      showToast("📸 About section photo loaded & optimized!");
+    });
+  }
 };
 
 window.handleAboutImageUrlInput = function(url) {
