@@ -476,12 +476,25 @@ async function refreshStorageWidget() {
   const usage = await window.supabaseGetStorageUsage();
 
   if (!usage.success) {
+    if (usage.bucketMissing) {
+      el.innerHTML = `
+        <div class="stat-widget-icon" style="background: rgba(245,158,11,0.15); color: #f59e0b;">⚠️</div>
+        <div class="stat-widget-info" style="width: 100%;">
+          <h3 style="font-size: 0.95rem; color: #f59e0b;">Bucket 'portfolio-media' Missing</h3>
+          <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Run the SQL schema in Supabase to enable cloud media storage.</p>
+          <div style="margin-top: 0.4rem; display: flex; gap: 0.4rem;">
+            <button onclick="handleCopySqlSchema()" style="background: rgba(6,182,212,0.15); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.72rem; cursor: pointer;">📋 Copy Setup SQL</button>
+            <button onclick="refreshStorageWidget()" style="background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.72rem;">🔄 Retry</button>
+          </div>
+        </div>`;
+      return;
+    }
     el.innerHTML = `
       <div class="stat-widget-icon" style="background: rgba(239,68,68,0.15); color: #ef4444;">📦</div>
       <div class="stat-widget-info">
-        <h3 style="font-size: 0.9rem; color: #ef4444;">Error</h3>
-        <p>Supabase Storage</p>
+        <h3 style="font-size: 0.9rem; color: #ef4444;">Storage Offline</h3>
         <p style="font-size: 0.7rem; color: #ef4444; margin-top: 0.1rem;">${usage.error || 'Check bucket settings'}</p>
+        <button onclick="refreshStorageWidget()" style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 0.7rem; padding: 0; margin-top: 0.2rem;">🔄 Retry</button>
       </div>`;
     return;
   }
@@ -499,12 +512,12 @@ async function refreshStorageWidget() {
     <div class="stat-widget-icon" style="background: rgba(16,185,129,0.15); color: ${color};">📦</div>
     <div class="stat-widget-info" style="width: 100%;">
       <h3 style="color: ${color}; font-size: 1rem;">${usedMB} MB <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">/ 1 GB</span></h3>
-      <p>Supabase Storage</p>
+      <p>Supabase Storage (Live)</p>
       <div style="margin-top: 0.4rem; background: rgba(255,255,255,0.06); border-radius: 99px; height: 5px; overflow: hidden; width: 100%;">
         <div style="height: 100%; width: ${pct}%; background: ${barGrad}; border-radius: 99px; transition: width 0.6s;"></div>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.7rem; color: var(--text-dim);">
-        <span>${pct}% used • ${usage.fileCount} file(s)</span>
+        <span>${pct}% used • ${usage.fileCount} file(s) in cloud</span>
         <button onclick="refreshStorageWidget()" style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 0.7rem; padding: 0;">🔄 Refresh</button>
       </div>
     </div>`;
@@ -680,7 +693,7 @@ window.handleServiceImagesUpload = async function(event) {
   const useStorage = (typeof window.supabaseUploadFile === "function" && window.isSupabaseConfigured());
 
   if (useStorage) {
-    showToast(`⏳ Uploading ${files.length} service image(s) to Supabase Storage...`);
+    showToast(`⏳ Uploading ${files.length} service image(s)...`);
     let uploaded = 0;
     for (const file of files) {
       const res = await window.supabaseUploadFile(file);
@@ -688,11 +701,18 @@ window.handleServiceImagesUpload = async function(event) {
         currentServiceImages.push(res.url);
         uploaded++;
       } else {
-        showToast(`⚠️ Upload failed for ${file.name}: ${res.error}`);
+        showToast(`⚠️ Supabase Storage (${res.error}). Saving optimized image.`);
+        await new Promise(resolve => {
+          compressImageFile(file, 1000, 600, 0.85, function(compressedUrl) {
+            currentServiceImages.push(compressedUrl);
+            uploaded++;
+            resolve();
+          });
+        });
       }
     }
     renderServiceImagesPreview();
-    if (uploaded > 0) showToast(`✅ ${uploaded} service image(s) uploaded to Supabase Storage!`);
+    if (uploaded > 0) showToast(`✅ ${uploaded} service image(s) processed!`);
     refreshStorageWidget();
   } else {
     let loadedCount = 0;
@@ -958,7 +978,7 @@ window.handleMultipleImageUpload = async function(event) {
   const useStorage = (typeof window.supabaseUploadFile === "function" && window.isSupabaseConfigured());
 
   if (useStorage) {
-    showToast(`⏳ Uploading ${files.length} image(s) to Supabase Storage...`);
+    showToast(`⏳ Uploading ${files.length} project image(s)...`);
     let uploaded = 0;
     for (const file of files) {
       const res = await window.supabaseUploadFile(file);
@@ -967,11 +987,19 @@ window.handleMultipleImageUpload = async function(event) {
         if (!currentThumbnailImage) currentThumbnailImage = res.url;
         uploaded++;
       } else {
-        showToast(`⚠️ Upload failed for ${file.name}: ${res.error}`);
+        showToast(`⚠️ Supabase Storage (${res.error}). Saving optimized image.`);
+        await new Promise(resolve => {
+          compressImageFile(file, 1200, 800, 0.85, function(base64Url) {
+            currentProjectImages.push(base64Url);
+            if (!currentThumbnailImage) currentThumbnailImage = base64Url;
+            uploaded++;
+            resolve();
+          });
+        });
       }
     }
     renderProjectImagesPreview();
-    if (uploaded > 0) showToast(`✅ ${uploaded} image(s) uploaded to Supabase Storage!`);
+    if (uploaded > 0) showToast(`✅ ${uploaded} project image(s) processed!`);
     // Refresh storage usage widget
     refreshStorageWidget();
   } else {
@@ -1222,11 +1250,17 @@ function loadProfileFormData(profile, socialHub) {
       urlInput.value = profile.aboutImage && !profile.aboutImage.startsWith("data:") ? profile.aboutImage : "";
     }
 
-    const socials = profile.socials || {};
     const setVal = (id, val) => {
       const el = document.getElementById(id);
       if (el) el.value = val || "";
     };
+
+    setVal("prof-years-exp", profile.yearsExp || "3+");
+    setVal("prof-projects-done", profile.projectsDone || "50+");
+    setVal("prof-happy-clients", profile.happyClients || "40+");
+    setVal("prof-client-satisfaction", profile.clientSatisfaction || "99%");
+
+    const socials = profile.socials || {};
     setVal("prof-youtube", socials.youtube || (socialHub && socialHub.youtubeUrl) || "");
     setVal("prof-facebook", socials.facebook || "");
     setVal("prof-instagram", socials.instagram || (socialHub && socialHub.instagramUrl) || "");
@@ -1243,7 +1277,7 @@ function loadProfileFormData(profile, socialHub) {
     document.getElementById("hub-yt-title").value = socialHub.youtubeTitle || "";
     document.getElementById("hub-yt-handle").value = socialHub.youtubeHandle || "";
     document.getElementById("hub-yt-url").value = socialHub.youtubeUrl || (profile && profile.socials && profile.socials.youtube) || "";
-    document.getElementById("hub-yt-subs").value = socialHub.subscribersCount || "15.4K+";
+    document.getElementById("hub-yt-subs").value = socialHub.subscribersCount || "10K+";
     document.getElementById("hub-yt-video").value = socialHub.featuredVideoEmbed || "";
   }
 }
@@ -1339,6 +1373,10 @@ window.handleSaveProfile = function(event) {
     title: getVal("prof-title"),
     tagline: getVal("prof-tagline"),
     fullBio: getVal("prof-fullbio"),
+    yearsExp: getVal("prof-years-exp") || "3+",
+    projectsDone: getVal("prof-projects-done") || "50+",
+    happyClients: getVal("prof-happy-clients") || "40+",
+    clientSatisfaction: getVal("prof-client-satisfaction") || "99%",
     aboutImage: finalAboutImg,
     avatar: finalAboutImg,
     phone: getVal("prof-phone"),
@@ -1365,7 +1403,7 @@ window.handleSaveProfile = function(event) {
 
   window.PortfolioData.updateProfile(profileUpdates);
   window.PortfolioData.updateSocialHub(socialHubUpdates);
-  showToast("💾 Profile & YouTube Social Hub saved!");
+  showToast("💾 Profile, Stats & Social Hub saved!");
 };
 
 /* ==========================================================================
@@ -1683,10 +1721,11 @@ window.handleSeedSupabase = async function() {
 };
 
 /**
- * Copy SQL Schema Script to Clipboard
+ * Copy Complete SQL Schema & Storage Setup Script to Clipboard
  */
 window.handleCopySqlSchema = function() {
-  const sqlScript = `-- 1. Create portfolio_data table
+  const sqlScript = `-- RAMMOHAN MURMU PORTFOLIO - FULL SUPABASE DATABASE & STORAGE SETUP
+-- 1. Create portfolio_data table
 CREATE TABLE IF NOT EXISTS public.portfolio_data (
     id TEXT PRIMARY KEY DEFAULT 'main',
     data JSONB NOT NULL DEFAULT '{}'::jsonb,
@@ -1694,25 +1733,67 @@ CREATE TABLE IF NOT EXISTS public.portfolio_data (
     updated_by TEXT DEFAULT 'admin'
 );
 
--- 2. Enable Row Level Security (RLS)
 ALTER TABLE public.portfolio_data ENABLE ROW LEVEL SECURITY;
 
--- 3. Allow Public Read & Full Write Access
 DROP POLICY IF EXISTS "Allow Public Read Access" ON public.portfolio_data;
 CREATE POLICY "Allow Public Read Access" ON public.portfolio_data FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Allow Public / Auth Full Access" ON public.portfolio_data;
 CREATE POLICY "Allow Public / Auth Full Access" ON public.portfolio_data FOR ALL USING (true) WITH CHECK (true);
 
--- 4. Enable Supabase Realtime for live cross-browser sync
-ALTER PUBLICATION supabase_realtime ADD TABLE public.portfolio_data;`;
+-- 2. Enable Realtime Sync
+ALTER PUBLICATION supabase_realtime ADD TABLE public.portfolio_data;
+
+-- 3. Create Public Storage Bucket for Images & Videos
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES ('portfolio-media', 'portfolio-media', true, 52428800, ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'video/mp4', 'video/webm'])
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DROP POLICY IF EXISTS "portfolio_media_select" ON storage.objects;
+CREATE POLICY "portfolio_media_select" ON storage.objects FOR SELECT USING (bucket_id = 'portfolio-media');
+
+DROP POLICY IF EXISTS "portfolio_media_insert" ON storage.objects;
+CREATE POLICY "portfolio_media_insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'portfolio-media');
+
+DROP POLICY IF EXISTS "portfolio_media_update" ON storage.objects;
+CREATE POLICY "portfolio_media_update" ON storage.objects FOR UPDATE USING (bucket_id = 'portfolio-media') WITH CHECK (bucket_id = 'portfolio-media');
+
+DROP POLICY IF EXISTS "portfolio_media_delete" ON storage.objects;
+CREATE POLICY "portfolio_media_delete" ON storage.objects FOR DELETE USING (bucket_id = 'portfolio-media');`;
 
   navigator.clipboard.writeText(sqlScript).then(() => {
-    showToast("📋 SQL Schema copied to clipboard! Paste in Supabase SQL Editor and click Run.");
+    showToast("📋 Full SQL & Storage Bucket Schema copied! Paste in Supabase SQL Editor and click Run.");
   }).catch(() => {
-    alert("Could not automatically copy. Please open 'supabase_schema.sql' in your project files and copy the code.");
+    alert("Could not automatically copy. Please open 'supabase_schema.sql' in your project root and copy all text.");
   });
 };
+
+/**
+ * Clean / Wipe All Demo Data and Start 100% Fresh
+ */
+window.handleCleanResetAllData = async function() {
+  const confirmed = confirm(
+    "⚠️ ARE YOU SURE YOU WANT TO WIPE ALL DEMO DATA?\n\nThis will remove all demo projects, demo services, and dummy reviews from both your browser and your live Supabase Cloud database.\n\nYou will get a completely fresh, empty portfolio ready to upload your own projects.\n\nClick OK to clean everything now."
+  );
+  if (!confirmed) return;
+
+  showToast("⏳ Cleaning and resetting all data...");
+  if (window.PortfolioData && typeof window.PortfolioData.resetToCleanSlate === "function") {
+    const res = await window.PortfolioData.resetToCleanSlate();
+    if (res && res.success !== false) {
+      showToast("🎉 All demo data wiped! Supabase and site are 100% clean & fresh.");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1200);
+    } else {
+      showToast("⚠️ Reset saved locally: " + (res.error || "Supabase not connected"));
+      setTimeout(() => {
+        window.location.reload();
+      }, 1200);
+    }
+  }
+};
+window.handleResetData = window.handleCleanResetAllData;
 
 /**
  * Update Admin Password via Supabase Auth

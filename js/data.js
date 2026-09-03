@@ -63,11 +63,11 @@ const DEFAULT_PORTFOLIO_DATA = {
     location: "West Bengal, India",
     availability: "Available for Freelance & Full-time",
     yearsExp: "3+",
-    projectsDone: "85+",
-    happyClients: "60+",
+    projectsDone: "50+",
+    happyClients: "40+",
     clientSatisfaction: "99%",
-    avatar: "assets/images/avatar.svg",
-    aboutImage: "assets/images/avatar.svg",
+    avatar: "",
+    aboutImage: "",
     resumeLink: "#contact",
     socials: {
       youtube: "https://www.youtube.com/@rammohanmurmu",
@@ -81,8 +81,8 @@ const DEFAULT_PORTFOLIO_DATA = {
     youtubeTitle: "Rammohan Murmu - Creative Studio",
     youtubeHandle: "@rammohanmurmu_design",
     youtubeUrl: "https://www.youtube.com/@rammohanmurmu",
-    subscribersCount: "15.4K+",
-    featuredVideoEmbed: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    subscribersCount: "10K+",
+    featuredVideoEmbed: "",
     featuredVideoTitle: "Showreel 2026: 3D Branding & Cinematic Motion Editing",
     instagramHandle: "@rammohan_creates",
     instagramUrl: "https://www.instagram.com/",
@@ -92,300 +92,16 @@ const DEFAULT_PORTFOLIO_DATA = {
     whatsappUrl: "https://wa.me/918250550060"
   },
   adminPin: "1234",
-  services: [
-    {
-      id: "srv-1",
-      icon: "pen-tool",
-      title: "Graphics Designing",
-      badge: "Mastery",
-      ribbon: "",
-      shortDesc: "Crafting premium visual brand identities, advertising creatives, high-conversion YouTube thumbnails, event posters, certificates, and flex banners.",
-      images: [
-        "assets/images/project_apex_branding.svg",
-        "assets/images/project_solaris_poster.svg"
-      ],
-      features: [
-        "Brand Identity & Logos",
-        "YouTube Viral Thumbnails",
-        "Event Posters & Flyers",
-        "Certificates & ID Cards",
-        "Flex & Hoarding Banners",
-        "Vector Illustrations"
-      ],
-      tools: [
-        { name: "Adobe Photoshop", color: "#31a8ff" },
-        { name: "Adobe Illustrator", color: "#ff9a00" },
-        { name: "Canva Pro", color: "#00c4cc" }
-      ],
-      proficiency: 95,
-      theme: "gold"
-    },
-    {
-      id: "srv-2",
-      icon: "ui-layout",
-      title: "UI/UX & Web Design",
-      badge: "Advanced",
-      ribbon: "",
-      shortDesc: "Designing user-centric mobile applications, SaaS dashboards, and modern interactive 3D web interfaces with Figma wireframes and responsive prototypes.",
-      images: [
-        "assets/images/project_cybervibe_web.svg",
-        "assets/images/project_novapay_ui.svg",
-        "assets/images/project_gourmet_ui.svg"
-      ],
-      features: [
-        "Figma Mobile App UI/UX",
-        "Modern Responsive Web",
-        "SaaS Dashboard Interfaces",
-        "Wireframing & UX Flow",
-        "Design Systems & Tokens"
-      ],
-      tools: [
-        { name: "Figma", color: "#a259ff" },
-        { name: "Adobe XD", color: "#ff61f6" },
-        { name: "HTML5 / CSS3", color: "#ea580c" }
-      ],
-      proficiency: 92,
-      theme: "cyan"
-    },
-    {
-      id: "srv-3",
-      icon: "video-camera",
-      title: "Cinematic Video Editing",
-      badge: "Specialist",
-      ribbon: "",
-      shortDesc: "High-retention YouTube video editing, cinematic color grading, teaser trailers, commercial promo ads, TikTok/Reels viral shorts, and custom sound design.",
-      images: [
-        "assets/images/project_neon_promo.svg",
-        "assets/images/project_vlog_editing.svg"
-      ],
-      features: [
-        "High-Retention YouTube Edits",
-        "Cinematic Color Grading",
-        "Teasers & Trailer Cuts",
-        "Commercial & Promo Ads",
-        "Viral Reels & Shorts VFX"
-      ],
-      tools: [
-        { name: "Adobe Premiere Pro", color: "#9999ff" },
-        { name: "After Effects", color: "#c880ff" },
-        { name: "CapCut Pro", color: "#00d2c4" }
-      ],
-      proficiency: 94,
-      theme: "orange"
-    }
+  services: [],
+  projects: [],
+  skills: [
+    { name: "Adobe Photoshop", level: 95, category: "graphics", icon: "ps" },
+    { name: "Adobe Illustrator", level: 90, category: "graphics", icon: "ai" },
+    { name: "Premiere Pro & After Effects", level: 92, category: "video", icon: "pr" },
+    { name: "Figma & UI/UX Design", level: 88, category: "uiux", icon: "figma" },
+    { name: "HTML5, CSS3 & JavaScript", level: 85, category: "web", icon: "code" }
   ],
-  projects: [
-    {
-      id: "proj-1",
-      title: "CyberForge Gaming - Viral YouTube Thumbnails Suite",
-      category: "graphics",
-      categoryName: "Graphic Design",
-      subCategory: "thumbnail",
-      subCategoryName: "YouTube Thumbnails",
-      featured: true,
-      image: "assets/images/project_apex_branding.svg",
-      images: ["assets/images/project_apex_branding.svg"],
-      client: "CyberForge Studios (850K Subs)",
-      duration: "4 Days",
-      tools: ["Adobe Photoshop", "Illustrator", "Blender 3D"],
-      description: "High-CTR 3D gaming thumbnail package featuring custom 3D lighting, expression cutouts, dynamic glow strokes, and vibrant visual hierarchy that improved click-through rates by 28%.",
-      liveLink: "https://behance.net",
-      videoUrl: "",
-      videoFile: "",
-      tags: ["YouTube Thumbnail", "Gaming", "High CTR", "Photoshop", "3D Art"],
-      reviews: [
-        {
-          id: "rev-1",
-          userName: "Ankit Verma (CyberForge)",
-          rating: 5,
-          comment: "Rammohan's thumbnail designs skyrocketed our video CTR from 6.2% to 11.4%! Absolutely phenomenal work.",
-          date: "Yesterday"
-        }
-      ]
-    },
-    {
-      id: "proj-2",
-      title: "Apex Esports - Brand Identity & Logo Suite",
-      category: "graphics",
-      categoryName: "Graphic Design",
-      subCategory: "logo",
-      subCategoryName: "Logos & Branding",
-      featured: true,
-      image: "assets/images/project_apex_branding.svg",
-      images: ["assets/images/project_apex_branding.svg"],
-      client: "Apex Esports League",
-      duration: "2 Weeks",
-      tools: ["Adobe Illustrator", "Photoshop", "Figma"],
-      description: "Complete visual identity design including an aggressive vector mascot logo, brand guidelines manual, typography palette, jersey graphics, and stream overlay assets.",
-      liveLink: "https://behance.net",
-      videoUrl: "",
-      videoFile: "",
-      tags: ["Branding", "Vector Logo", "Esports", "Illustrator"],
-      reviews: [
-        {
-          id: "rev-2",
-          userName: "Rohit Sharma",
-          rating: 5,
-          comment: "Transformed our whole gaming organization identity. The vector precision is unbelievable.",
-          date: "3 days ago"
-        }
-      ]
-    },
-    {
-      id: "proj-3",
-      title: "Sunburn Music Festival - Grand Event Poster & Flex Banner",
-      category: "graphics",
-      categoryName: "Graphic Design",
-      subCategory: "poster",
-      subCategoryName: "Posters & Flyers",
-      featured: false,
-      image: "assets/images/project_poster_event.svg",
-      images: ["assets/images/project_poster_event.svg"],
-      client: "Pulse Events Global",
-      duration: "5 Days",
-      tools: ["Adobe Photoshop", "Illustrator"],
-      description: "High-resolution multi-format event promotional campaign including A3 printed posters, highway flex hoardings (20x10 ft), and social media announcement carousels.",
-      liveLink: "https://behance.net",
-      videoUrl: "",
-      videoFile: "",
-      tags: ["Event Poster", "Flex Banner", "Print Ready", "Photoshop"],
-      reviews: []
-    },
-    {
-      id: "proj-4",
-      title: "Global Tech Academy - Premium Certificate & Smart ID Card",
-      category: "graphics",
-      categoryName: "Graphic Design",
-      subCategory: "certificate_id",
-      subCategoryName: "Certificates & ID Cards",
-      featured: false,
-      image: "assets/images/project_apex_branding.svg",
-      images: ["assets/images/project_apex_branding.svg"],
-      client: "National Institute of Design & Tech",
-      duration: "1 Week",
-      tools: ["Adobe Illustrator", "InDesign", "Photoshop"],
-      description: "Official security-enhanced diploma certificate with guilloche watermark borders and QR verification, paired with modern NFC-ready corporate employee ID cards.",
-      liveLink: "https://behance.net",
-      videoUrl: "",
-      videoFile: "",
-      tags: ["Certificate Design", "ID Card", "Corporate Print", "Vector Security"],
-      reviews: []
-    },
-    {
-      id: "proj-5",
-      title: "HyperX Gear Launch - 4K Cinematic Commercial & Teaser Trailer",
-      category: "video",
-      categoryName: "Video Editing",
-      subCategory: "teaser_trailer",
-      subCategoryName: "Teasers & Trailers",
-      featured: true,
-      image: "assets/images/project_cinematic_showreel.svg",
-      images: ["assets/images/project_cinematic_showreel.svg"],
-      client: "HyperX Gaming India",
-      duration: "10 Days",
-      tools: ["Adobe Premiere Pro", "After Effects", "DaVinci Resolve"],
-      description: "High-octane commercial teaser trailer featuring 3D product motion graphics, dynamic sound design with heavy bass hits, cinematic anamorphic color grading, and VFX glitches.",
-      liveLink: "",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      videoFile: "",
-      tags: ["Cinematic Video", "Promo Teaser", "Color Grading", "Sound Design"],
-      reviews: [
-        {
-          id: "rev-3",
-          userName: "Sneha Mukherjee",
-          rating: 5,
-          comment: "The trailer got 300k+ views on launch week! Sound design and pacing were top notch.",
-          date: "1 week ago"
-        }
-      ]
-    },
-    {
-      id: "proj-6",
-      title: "Alex Vlogs - High Retention Viral YouTube Editing",
-      category: "video",
-      categoryName: "Video Editing",
-      subCategory: "yt_retention",
-      subCategoryName: "YouTube Retention Edits",
-      featured: false,
-      image: "assets/images/project_vlog_editing.svg",
-      images: ["assets/images/project_vlog_editing.svg"],
-      client: "Alex Vlogs (1.2M Subs)",
-      duration: "Ongoing",
-      tools: ["Adobe Premiere Pro", "After Effects", "Photoshop"],
-      description: "Fast-paced YouTube editing style with custom sound effects, animated subtitle captions, B-roll transitions, zooms, and custom thumbnails that increased average watch duration by 42%.",
-      liveLink: "",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      videoFile: "",
-      tags: ["YouTube Video", "High Retention", "Custom Thumbnails", "B-Roll"],
-      reviews: []
-    },
-    {
-      id: "proj-7",
-      title: "NovaPay - Crypto & Neo-Banking Mobile App UI/UX",
-      category: "uiux",
-      categoryName: "UI/UX Design",
-      subCategory: "mobile_app",
-      subCategoryName: "Mobile App UI (Figma)",
-      featured: true,
-      image: "assets/images/project_novapay_ui.svg",
-      images: ["assets/images/project_novapay_ui.svg"],
-      client: "Nova Financial Technologies",
-      duration: "3 Weeks",
-      tools: ["Figma", "Adobe Illustrator", "Protopie"],
-      description: "Next-gen fintech mobile app featuring dark/glassmorphic aesthetics, biometric authentication, instant crypto swap interfaces, and fully interactive Figma component design systems.",
-      liveLink: "https://figma.com",
-      videoUrl: "",
-      videoFile: "",
-      tags: ["Fintech", "Mobile App UI", "Figma", "Design System"],
-      reviews: []
-    },
-    {
-      id: "proj-8",
-      title: "Quantum SaaS - 3D Analytics Dashboard & Web Landing Page",
-      category: "uiux",
-      categoryName: "UI/UX Design",
-      subCategory: "web_design",
-      subCategoryName: "Modern Web & Landing",
-      featured: true,
-      image: "assets/images/project_quantum_web.svg",
-      images: ["assets/images/project_quantum_web.svg"],
-      client: "Quantum Cloud Solutions",
-      duration: "2.5 Weeks",
-      tools: ["HTML5", "CSS3", "JavaScript", "Figma"],
-      description: "Futuristic dark-mode landing page and analytics dashboard with interactive 3D particle canvas background, real-time KPI graphs, and smooth scroll animations.",
-      liveLink: "https://github.com",
-      videoUrl: "",
-      videoFile: "",
-      tags: ["3D Web", "Landing Page", "SaaS Dashboard", "Interactive"],
-      reviews: []
-    }
-  ],
-  testimonials: [
-    {
-      id: "test-1",
-      name: "Rohit Sharma",
-      role: "Founder, Apex Gaming League",
-      comment: "Rammohan's graphic design and branding transformed our esports team's identity. Our Twitch overlays and tournament banners look world-class! Highly recommended.",
-      rating: 5,
-      avatar: "assets/images/avatar.svg"
-    },
-    {
-      id: "test-2",
-      name: "Sneha Mukherjee",
-      role: "Marketing Lead, Pulse Events",
-      comment: "The video teaser and Instagram reels edited by Rammohan generated over 250,000 views in just 48 hours. His sound design and color grading are top-notch.",
-      rating: 5,
-      avatar: "assets/images/avatar.svg"
-    },
-    {
-      id: "test-3",
-      name: "Vikram Das",
-      role: "CEO, Nova Financial Tech",
-      comment: "The UI/UX design for our mobile banking app was delivered with great attention to detail. Figma interactive prototypes and design system helped our developers ship faster.",
-      rating: 5,
-      avatar: "assets/images/avatar.svg"
-    }
-  ]
+  testimonials: []
 };
 
 const STORAGE_KEY = "rammohan_murmu_portfolio_data_v4";
@@ -526,6 +242,17 @@ window.PortfolioData = {
       return await window.supabaseSeedData(current);
     }
     return { success: false, message: "Supabase not configured." };
+  },
+
+  async resetToCleanSlate() {
+    const cleanData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO_DATA));
+    this.saveLocalOnly(cleanData);
+    window.dispatchEvent(new CustomEvent("portfolioDataChanged", { detail: cleanData }));
+
+    if (typeof window.supabaseResetAllData === "function" && typeof window.isSupabaseConfigured === "function" && window.isSupabaseConfigured()) {
+      return await window.supabaseResetAllData(cleanData);
+    }
+    return { success: true, localOnly: true };
   },
 
   // 1. Projects CRUD

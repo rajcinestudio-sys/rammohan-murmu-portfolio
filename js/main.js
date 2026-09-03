@@ -25,13 +25,60 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ==========================================================================
-   1. SPLASH SCREEN / PRELOADER CONTROLLER (100% LOADING)
+   1. SPLASH SCREEN / PRELOADER CONTROLLER (DYNAMIC AVATAR / INITIALS)
    ========================================================================== */
 function initSplashScreen() {
   const splash = document.getElementById("splash-screen");
   const bar = document.getElementById("splash-progress-bar");
   const counter = document.getElementById("splash-counter");
   if (!splash) return;
+
+  // Check if profile avatar/image exists in data
+  try {
+    const data = (window.PortfolioData && typeof window.PortfolioData.get === "function") 
+      ? window.PortfolioData.get() 
+      : null;
+    const profile = data ? data.profile : null;
+    if (profile) {
+      const avatarImg = document.getElementById("splash-avatar-img");
+      const logoBadge = document.getElementById("splash-logo-badge");
+      const splashName = document.getElementById("splash-profile-name");
+      const splashSub = document.getElementById("splash-profile-subtitle");
+
+      if (splashName && profile.name) splashName.textContent = profile.name;
+      if (splashSub && (profile.tagline || profile.title)) splashSub.textContent = profile.tagline || profile.title;
+
+      const imgSrc = profile.aboutImage || profile.avatar || "";
+      const isCustomUploaded = Boolean(
+        imgSrc &&
+        imgSrc.trim() !== "" &&
+        !imgSrc.includes("placeholder") &&
+        !imgSrc.endsWith("avatar.svg") &&
+        (imgSrc.startsWith("http") || imgSrc.startsWith("data:") || imgSrc.includes("profile/") || imgSrc.includes("uploads/"))
+      );
+
+      if (avatarImg && logoBadge) {
+        if (isCustomUploaded) {
+          avatarImg.src = imgSrc;
+          avatarImg.style.display = "block";
+          logoBadge.style.display = "none";
+          avatarImg.onerror = function() {
+            avatarImg.style.display = "none";
+            logoBadge.style.display = "flex";
+          };
+        } else {
+          avatarImg.style.display = "none";
+          logoBadge.style.display = "flex";
+          if (profile.name) {
+            const initials = profile.name.trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+            logoBadge.textContent = initials || "RM";
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Splash screen dynamic profile setup:", e);
+  }
 
   let progress = 0;
   const timer = setInterval(() => {
@@ -289,14 +336,14 @@ function renderAllPortfolioContent() {
     setText("hero-name-highlight", p.name);
     setText("hero-tagline-desc", p.tagline);
     setText("stat-exp", p.yearsExp || "3+");
-    setText("stat-projects", p.projectsDone || "85+");
-    setText("stat-clients", p.clientSatisfaction || "99%");
+    setText("stat-projects", p.projectsDone || "50+");
+    setText("stat-clients", p.happyClients || "40+");
     setText("about-fullbio", p.fullBio);
     setText("about-location", p.location || "West Bengal, India");
     setText("about-exp", (p.yearsExp || "3+") + " Years Professional");
     setText("about-exp-number", (p.yearsExp || "3+") + " Years");
-    setText("about-stat-projects", p.projectsDone || "85+");
-    setText("about-stat-clients", p.happyClients || "60+");
+    setText("about-stat-projects", p.projectsDone || "50+");
+    setText("about-stat-clients", p.happyClients || "40+");
     setText("about-stat-satisfaction", p.clientSatisfaction || "99%");
 
     const aboutImgEl = document.getElementById("about-profile-img");

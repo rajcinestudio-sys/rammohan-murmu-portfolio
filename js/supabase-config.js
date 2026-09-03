@@ -440,7 +440,7 @@ window.supabaseGetCurrentUser = async function() {
 };
 
 /**
- * Upload Image / File to Supabase Storage Bucket (Optional)
+ * Upload Image / File to Supabase Storage Bucket
  */
 window.supabaseUploadFile = async function(file, customPath) {
   const client = window.getSupabaseClient();
@@ -459,6 +459,13 @@ window.supabaseUploadFile = async function(file, customPath) {
       });
 
     if (error) {
+      if (error.message && (error.message.includes("not found") || error.statusCode === "404" || error.error === "Bucket not found")) {
+        return {
+          success: false,
+          bucketMissing: true,
+          error: `Storage Bucket '${cfg.storageBucket}' does not exist in Supabase yet. Please run the script in supabase_schema.sql in your Supabase SQL Editor to create it.`
+        };
+      }
       return { success: false, error: error.message };
     }
 
@@ -475,7 +482,7 @@ window.supabaseUploadFile = async function(file, customPath) {
 
 /**
  * Delete a File from Supabase Storage by its path
- * filePath should be the path returned by supabaseUploadFile() (e.g. "uploads/123_abc.jpg")
+ * filePath should be the path (e.g. "uploads/123_abc.jpg" or "profile/about_123.jpg")
  */
 window.supabaseDeleteFile = async function(filePath) {
   const client = window.getSupabaseClient();
@@ -541,7 +548,7 @@ window.supabaseDeleteFilesFromUrls = async function(urls) {
     if (error) {
       console.warn("[Supabase Storage] Bulk delete error:", error.message);
     } else {
-      console.log(`[Supabase Storage] Deleted ${paths.length} files:`, paths);
+      console.log(`[Supabase Storage] Deleted ${paths.length} file(s) from bucket:`, paths);
     }
   } catch (e) {
     console.error("[Supabase Storage] Exception in bulk delete:", e);
@@ -549,9 +556,9 @@ window.supabaseDeleteFilesFromUrls = async function(urls) {
 };
 
 /**
- * Get Supabase Storage usage — lists all files in bucket and sums their sizes
- * Returns: { success, usedBytes, usedMB, fileCount, limitMB, percentUsed }
- * NOTE: Supabase Free plan = 1 GB storage limit
+ * Get Supabase Storage usage — lists all files across folders (uploads, profile, root)
+ * Returns: { success, usedBytes, usedMB, fileCount, limitMB, percentUsed, bucketReady }
+ * Supabase Free plan = 1 GB (1024 MB) storage limit
  */
 window.supabaseGetStorageUsage = async function() {
   const client = window.getSupabaseClient();
@@ -561,31 +568,58 @@ window.supabaseGetStorageUsage = async function() {
   const LIMIT_BYTES = 1 * 1024 * 1024 * 1024; // 1 GB free plan limit
 
   try {
-    // List all files recursively from uploads/ folder
-    const { data, error } = await client.storage
-      .from(cfg.storageBucket)
-      .list("uploads", {
-        limit: 1000,
-        offset: 0
-      });
+    let allFiles = [];
+    const foldersToScan = ["", "uploads", "profile"];
 
-    if (error) {
-      // If bucket doesn't exist yet or access denied
-      console.warn("[Supabase Storage] List error:", error.message);
-      return { success: false, error: error.message };
+    for (const folder of foldersToScan) {
+      const { data, error } = await client.storage
+        .from(cfg.storageBucket)
+        .list(folder, {
+          limit: 1000,
+          offset: 0
+        });
+
+      if (error) {
+        if (error.message && (error.message.includes("not found") || error.statusCode === "404" || error.error === "Bucket not found")) {
+          return {
+            success: false,
+            bucketMissing: true,
+            error: `Bucket '${cfg.storageBucket}' not found. Please run supabase_schema.sql in Supabase SQL Editor.`
+          };
+        }
+        // Folder might just not exist yet, continue
+        continue;
+      }
+
+      if (Array.isArray(data)) {
+        // Exclude directory placeholders
+        const filesOnly = data.filter(f => f.id || (f.metadata && f.metadata.size !== undefined));
+        allFiles.push(...filesOnly);
+      }
     }
 
-    const files = data || [];
-    const usedBytes = files.reduce((sum, f) => sum + (f.metadata?.size || 0), 0);
+    // Deduplicate by name/id
+    const seen = new Set();
+    const uniqueFiles = [];
+    for (const f of allFiles) {
+      const key = f.id || f.name;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueFiles.push(f);
+      }
+    }
+
+    const usedBytes = uniqueFiles.reduce((sum, f) => sum + (f.metadata?.size || 0), 0);
     const usedMB = (usedBytes / (1024 * 1024)).toFixed(2);
     const limitMB = (LIMIT_BYTES / (1024 * 1024)).toFixed(0);
     const percentUsed = Math.min(100, ((usedBytes / LIMIT_BYTES) * 100)).toFixed(1);
 
     return {
       success: true,
+      bucketReady: true,
       usedBytes,
       usedMB: parseFloat(usedMB),
-      fileCount: files.length,
+      fileCount: uniqueFiles.length,
       limitMB: parseInt(limitMB),
       limitGB: 1,
       percentUsed: parseFloat(percentUsed)
@@ -593,5 +627,34 @@ window.supabaseGetStorageUsage = async function() {
   } catch (e) {
     console.error("[Supabase Storage] Exception getting usage:", e);
     return { success: false, error: e.message };
+  }
+};
+
+/**
+ * Reset all Supabase cloud database content to a clean fresh slate
+ */
+window.supabaseResetAllData = async function(cleanData) {
+  const client = window.getSupabaseClient();
+  if (!client) return { success: false, error: "Supabase not configured" };
+
+  const cfg = getSupabaseConfig();
+  try {
+    const payload = {
+      id: cfg.recordId,
+      data: cleanData,
+      updated_at: new Date().toISOString(),
+      updated_by: "clean_reset"
+    };
+
+    const { error } = await client
+      .from(cfg.tableName)
+      .upsert(payload, { onConflict: "id" });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
   }
 };
