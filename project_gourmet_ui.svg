@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="foodBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c0f00" />
+      <stop offset="50%" stop-color="#3d1e03" />
+      <stop offset="100%" stop-color="#140a00" />
+    </linearGradient>
+    <linearGradient id="amberG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="400" fill="url(#foodBg)" />
+
+  <!-- Mobile Screen -->
+  <g transform="translate(190, 25)">
+    <rect width="220" height="350" rx="32" fill="#18181b" stroke="#78350f" stroke-width="3" />
+    
+    <!-- Top Bar -->
+    <text x="20" y="45" font-family="'Outfit', sans-serif" font-size="14" font-weight="900" fill="#f59e0b">Gourmet Haven</text>
+    <circle cx="190" cy="40" r="14" fill="#3f3f46" />
+    
+    <!-- Food Hero Card -->
+    <g transform="translate(15, 65)">
+      <rect width="190" height="130" rx="16" fill="#27272a" stroke="#d97706" stroke-width="1.5" />
+      <!-- Dish Graphic -->
+      <circle cx="95" cy="55" r="35" fill="url(#amberG)" />
+      <circle cx="95" cy="55" r="28" fill="#78350f" />
+      <text x="95" y="60" font-size="20" text-anchor="middle">🍲</text>
+      
+      <text x="15" y="105" font-family="'Outfit', sans-serif" font-weight="800" font-size="13" fill="#ffffff">Truffle Risotto Bowl</text>
+      <text x="15" y="120" font-family="'Outfit', sans-serif" font-weight="900" font-size="13" fill="#fbbf24">$24.00</text>
+      <rect x="145" y="98" width="30" height="24" rx="8" fill="#f59e0b" />
+      <text x="160" y="115" font-family="'Outfit', sans-serif" font-size="14" font-weight="900" fill="#000000" text-anchor="middle">+</text>
+    </g>
+
+    <!-- Bottom Category Pills -->
+    <g transform="translate(15, 215)">
+      <rect width="55" height="28" rx="8" fill="#f59e0b" />
+      <text x="27" y="234" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="700" fill="#000000" text-anchor="middle">Italian</text>
+      
+      <rect x="65" y="215" width="55" height="28" rx="8" fill="#27272a" />
+      <text x="92" y="234" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="700" fill="#a1a1aa" text-anchor="middle">Asian</text>
+
+      <rect x="125" y="215" width="55" height="28" rx="8" fill="#27272a" />
+      <text x="152" y="234" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="700" fill="#a1a1aa" text-anchor="middle">Desserts</text>
+    </g>
+  </g>
+
+  <!-- Floating Badge -->
+  <g transform="translate(40, 40)">
+    <rect width="110" height="32" rx="16" fill="#451a03" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="55" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700" fill="#fcd34d" text-anchor="middle">UI/UX DESIGN</text>
+  </g>
+</svg>

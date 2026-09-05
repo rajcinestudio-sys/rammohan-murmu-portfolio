@@ -295,15 +295,6 @@
             <p>Client Reviews</p>
           </div>
         </div>
-
-        <!-- Supabase Storage Usage Widget -->
-        <div class="stat-widget-card" id="dash-storage-widget" style="flex-direction: row; align-items: flex-start; gap: 0.8rem;">
-          <div class="stat-widget-icon" style="background: rgba(100,116,139,0.15); color: #64748b;">📦</div>
-          <div class="stat-widget-info" style="width: 100%;">
-            <h3 style="font-size: 1rem; color: #64748b;">Loading...</h3>
-            <p>Supabase Storage</p>
-          </div>
-        </div>
       </div>
 
       <!-- Quick Guidance Box -->
@@ -461,38 +452,6 @@
             <div class="form-group-admin">
               <label for="prof-location">Location</label>
               <input type="text" id="prof-location" class="form-control-admin" required>
-            </div>
-          </div>
-
-          <!-- Portfolio Stats & Experience Counters -->
-          <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.5rem; color: var(--accent-cyan); display: flex; align-items: center; gap: 0.5rem;">
-            📈 Live Portfolio Stats &amp; Experience Counters
-          </h3>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.2rem;">
-            These metrics appear directly in your portfolio's Hero badges and About Me stats counters.
-          </p>
-
-          <div class="form-grid-2">
-            <div class="form-group-admin">
-              <label for="prof-years-exp">Years of Experience (e.g. 3+ or 5+)</label>
-              <input type="text" id="prof-years-exp" class="form-control-admin" placeholder="3+">
-            </div>
-
-            <div class="form-group-admin">
-              <label for="prof-projects-done">Total Projects Completed (e.g. 50+ or 80+)</label>
-              <input type="text" id="prof-projects-done" class="form-control-admin" placeholder="50+">
-            </div>
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group-admin">
-              <label for="prof-happy-clients">Happy Clients / Creators (e.g. 40+ or 100+)</label>
-              <input type="text" id="prof-happy-clients" class="form-control-admin" placeholder="40+">
-            </div>
-
-            <div class="form-group-admin">
-              <label for="prof-client-satisfaction">Client Satisfaction Rate (e.g. 99% or 100%)</label>
-              <input type="text" id="prof-client-satisfaction" class="form-control-admin" placeholder="99%">
             </div>
           </div>
 
@@ -761,8 +720,8 @@
                 <span>📤 Restore from JSON File</span>
               </button>
 
-              <button class="btn-admin btn-admin-danger" onclick="handleCleanResetAllData()" style="margin-top: 0.5rem; background: rgba(239,68,68,0.18); border: 1px solid #ef4444; color: #ff6b6b; font-weight: 700;">
-                <span>🗑️ Wipe All Demo Data &amp; Start Fresh</span>
+              <button class="btn-admin btn-admin-danger" onclick="handleResetData()" style="margin-top: 0.5rem;">
+                <span>🔄 Reset All to Defaults</span>
               </button>
             </div>
           </div>
