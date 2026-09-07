@@ -411,6 +411,20 @@ function renderAllPortfolioContent() {
   if (hasReviews) {
     renderTestimonials(allReviews);
   }
+
+  // 7. YouTube Channel Showcase & Social Hub (#social-hub) — respects toggle
+  const showHub = data.socialHub ? data.socialHub.showYouTubeHub !== false : true;
+  renderSocialHub(data.socialHub, data.profile);
+  updateSectionVisibility("social-hub", showHub, "#social-hub");
+  // Also hide YouTube Hub nav item in drawer if disabled
+  const drawerYtLink = document.getElementById("drawer-youtube-hub-link");
+  if (drawerYtLink) {
+    drawerYtLink.parentElement.style.display = showHub ? "" : "none";
+  }
+  const desktopYtLink = document.querySelector("a[href='#social-hub']");
+  if (desktopYtLink && !desktopYtLink.id) {
+    desktopYtLink.style.display = showHub ? "" : "none";
+  }
 }
 
 function setText(id, text) {
@@ -533,6 +547,107 @@ function renderServices(services) {
 }
 
 /* ==========================================================================
+   5B. YOUTUBE CHANNEL SHOWCASE & SOCIAL HUB CONTROLLER (#social-hub)
+   ========================================================================== */
+function renderSocialHub(socialHub, profile) {
+  const container = document.getElementById("social-hub");
+  if (!container) return;
+
+  const hub = socialHub || {};
+  const prof = profile || {};
+
+  const ytTitle = hub.youtubeTitle || (prof.name ? `${prof.name} - Creative Studio` : "Rammohan Murmu - Creative Studio");
+  const ytHandle = hub.youtubeHandle || "@rammohanmurmu_design";
+  const ytUrl = hub.youtubeUrl || (prof.socials && prof.socials.youtube) || "https://www.youtube.com/@rammohanmurmu";
+  const ytSubs = hub.subscribersCount || "15.4K+";
+  const ytVideo = hub.featuredVideoEmbed || "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+
+  setText("hub-yt-channel-name", ytTitle);
+  setText("hub-yt-handle-display", ytHandle);
+  setText("hub-yt-subs-display", ytSubs);
+
+  const subBtn = document.getElementById("hub-yt-sub-btn");
+  if (subBtn && ytUrl) {
+    subBtn.href = ytUrl;
+  }
+
+  const avatarImg = document.getElementById("hub-yt-avatar");
+  if (avatarImg) {
+    avatarImg.src = prof.aboutImage || prof.avatar || "assets/images/avatar.svg";
+  }
+
+  // Render YouTube Featured Video Showcase
+  const videoFrame = document.getElementById("hub-yt-video-frame");
+  if (videoFrame) {
+    if (ytVideo && ytVideo.trim().length > 0) {
+      if (window.YouTubeHelper && window.YouTubeHelper.extractVideoId(ytVideo)) {
+        videoFrame.innerHTML = window.YouTubeHelper.createIframeHtml(ytVideo, ytTitle, { autoplay: 0, controls: true });
+      } else {
+        videoFrame.innerHTML = `<iframe src="${ytVideo.trim()}" title="${ytTitle}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="width:100%; height:100%; border:none; display:block;"></iframe>`;
+      }
+    } else {
+      videoFrame.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-dim); text-align:center; padding:2rem;">
+          <span style="font-size:2.5rem; margin-bottom:0.5rem;">📺</span>
+          <p style="font-weight:700; color:#fff;">Featured Showcase Video</p>
+          <p style="font-size:0.85rem;">Set a featured YouTube video link in Admin CMS</p>
+        </div>
+      `;
+    }
+  }
+
+  // Render Social Cards Grid
+  const cardsGrid = document.getElementById("hub-social-cards-grid");
+  if (cardsGrid) {
+    const cards = [
+      {
+        id: "instagram",
+        name: "Instagram",
+        handle: hub.instagramHandle || "@rammohan_creates",
+        url: hub.instagramUrl || (prof.socials && prof.socials.instagram) || "https://www.instagram.com/",
+        icon: "📸",
+        action: "Follow Reels & Stories →"
+      },
+      {
+        id: "behance",
+        name: "Behance",
+        handle: "Case Studies & Works",
+        url: hub.behanceUrl || "https://www.behance.net/",
+        icon: "🎨",
+        action: "View Full Projects →"
+      },
+      {
+        id: "dribbble",
+        name: "Dribbble",
+        handle: "Visual Shots & 3D",
+        url: hub.dribbbleUrl || "https://dribbble.com/",
+        icon: "🏀",
+        action: "Explore Creative Shots →"
+      },
+      {
+        id: "whatsapp",
+        name: "WhatsApp Community",
+        handle: "Direct Project Chat",
+        url: hub.whatsappUrl || (prof.whatsapp ? `https://wa.me/91${prof.whatsapp}` : "https://wa.me/918250550060"),
+        icon: "💬",
+        action: "Start Instant Chat →"
+      }
+    ];
+
+    cardsGrid.innerHTML = cards.map(c => `
+      <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="social-hub-card ${c.id}">
+        <div>
+          <div class="social-card-top-icon">${c.icon}</div>
+          <div class="social-card-name">${c.name}</div>
+          <p style="font-size:0.82rem; color:var(--text-muted);">${c.handle}</p>
+        </div>
+        <div class="social-card-action">${c.action}</div>
+      </a>
+    `).join("");
+  }
+}
+
+/* ==========================================================================
    6. PORTFOLIO & DYNAMIC SUBCATEGORY FILTERING SYSTEM
    ========================================================================== */
 function initPortfolioFilters(projects) {
@@ -627,15 +742,17 @@ function renderProjects(projects) {
       : "5.0";
 
     const badgeLabel = p.subCategoryName || p.categoryName || "Work";
+    const hasVideo = Boolean((p.videoUrl && p.videoUrl.trim().length > 0) || (p.videoFile && p.videoFile.trim().length > 0));
 
     return `
       <div class="project-card" onclick="openProjectModal('${p.id}')">
         <div class="project-thumb-box">
           <span class="project-badge-tag">${badgeLabel}</span>
+          ${hasVideo ? `<span class="project-video-badge" style="position:absolute; top:12px; right:12px; z-index:2; background:rgba(239,68,68,0.92); color:#fff; font-size:0.72rem; font-weight:800; padding:0.25rem 0.65rem; border-radius:9999px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 4px 12px rgba(239,68,68,0.5); border:1px solid rgba(255,255,255,0.3); backdrop-filter:blur(6px);"><span style="font-size:0.68rem;">▶</span> Video</span>` : ''}
           <img src="${p.image}" alt="${p.title}" loading="lazy">
           <div class="project-overlay">
-            <div class="overlay-btn">👁️</div>
-            <span style="font-weight: 700; font-size: 0.95rem; color: #fff;">View Project</span>
+            <div class="overlay-btn">${hasVideo ? '▶' : '👁️'}</div>
+            <span style="font-weight: 700; font-size: 0.95rem; color: #fff;">${hasVideo ? 'Play Video' : 'View Project'}</span>
           </div>
         </div>
         <div class="project-info">
@@ -1099,20 +1216,21 @@ window.openProjectModal = function(projectId) {
     : [project.image || "assets/images/project_placeholder.svg"];
 
   // Video or Image rendering
-  if (project.videoFile && project.videoFile.trim().length > 0) {
+  const hasYouTube = Boolean(project.videoUrl && window.YouTubeHelper && window.YouTubeHelper.extractVideoId(project.videoUrl));
+  const hasVideoFile = Boolean(project.videoFile && project.videoFile.trim().length > 0);
+
+  if (hasYouTube) {
+    mediaContainer.innerHTML = window.YouTubeHelper.createIframeHtml(project.videoUrl, project.title, { autoplay: 1 });
+    galleryThumbs.style.display = "none";
+  } else if (hasVideoFile) {
     mediaContainer.innerHTML = `
-      <video src="${project.videoFile}" controls autoplay style="width:100%; height:100%; object-fit:contain; background:#000;"></video>
+      <video src="${project.videoFile}" controls autoplay playsinline style="width:100%; height:100%; object-fit:contain; background:#000; display:block;"></video>
     `;
     galleryThumbs.style.display = "none";
   } else if (project.videoUrl && project.videoUrl.trim().length > 0) {
-    let embedUrl = project.videoUrl;
-    if (embedUrl.includes("watch?v=")) {
-      embedUrl = embedUrl.replace("watch?v=", "embed/");
-    } else if (embedUrl.includes("youtu.be/")) {
-      embedUrl = embedUrl.replace("youtu.be/", "www.youtube.com/embed/");
-    }
+    // Other embeddable video URL (e.g. Vimeo or custom stream)
     mediaContainer.innerHTML = `
-      <iframe src="${embedUrl}" title="${project.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <iframe src="${project.videoUrl.trim()}" title="${project.title || 'Video'}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="width:100%; height:100%; border:none; display:block;"></iframe>
     `;
     galleryThumbs.style.display = "none";
   } else {
@@ -1282,6 +1400,16 @@ window.closeModalOnBackdrop = function(event, modalId) {
     closeModal(modalId);
   }
 };
+
+// Keyboard listener for ESC key to close active modals
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const activeModal = document.querySelector(".modal-backdrop.active");
+    if (activeModal && activeModal.id) {
+      closeModal(activeModal.id);
+    }
+  }
+});
 
 /* ==========================================================================
    11. WHATSAPP & NAVIGATION HELPERS

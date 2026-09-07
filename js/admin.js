@@ -87,6 +87,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   await checkAuth();
   initTabNavigation();
   checkSupabaseStatus();
+  // Deferred storage widget refresh: wait for Supabase SDK to be ready
+  setTimeout(() => refreshStorageWidget(), 1800);
 });
 
 /* ==========================================================================
@@ -329,6 +331,29 @@ window.toggleAdminMobileSidebar = function() {
       if (hamburger) hamburger.classList.add("active");
     }
   }
+};
+
+window.closeAdminMobileSidebar = function() {
+  const sidebar = document.getElementById("admin-sidebar");
+  const backdrop = document.getElementById("admin-sidebar-backdrop");
+  const hamburger = document.getElementById("admin-hamburger-btn");
+  if (sidebar && sidebar.classList.contains("mobile-open")) {
+    sidebar.classList.remove("mobile-open");
+    if (backdrop) backdrop.classList.remove("active");
+    if (hamburger) hamburger.classList.remove("active");
+  }
+};
+
+window.switchAdminTab = function(targetTab) {
+  const tabBtn = document.querySelector(`.nav-tab-btn[data-tab="${targetTab}"], .admin-dock-btn[data-tab="${targetTab}"]`);
+  if (tabBtn) {
+    tabBtn.click();
+  }
+};
+
+window.openCloudSyncTabFromMenu = function() {
+  window.switchAdminTab("tab-sync");
+  window.closeAdminMobileSidebar();
 };
 
 /* ==========================================================================
@@ -928,6 +953,8 @@ window.openAddProjectModal = function() {
   currentThumbnailImage = "";
   currentProjectVideoFile = "";
   document.getElementById("proj-video-filename").textContent = "";
+  document.getElementById("proj-input-video").value = "";
+  updateAdminProjectVideoPreview();
   renderProjectImagesPreview();
   document.getElementById("project-edit-modal").style.display = "flex";
 };
@@ -956,6 +983,7 @@ window.openEditProjectModal = function(id) {
 
   currentProjectVideoFile = project.videoFile || "";
   document.getElementById("proj-video-filename").textContent = currentProjectVideoFile ? "Attached Video File" : "";
+  updateAdminProjectVideoPreview();
 
   currentProjectImages = Array.isArray(project.images) && project.images.length > 0
     ? [...project.images]
@@ -1027,9 +1055,131 @@ window.handleVideoFileUpload = function(event) {
   reader.onload = function(e) {
     currentProjectVideoFile = e.target.result;
     document.getElementById("proj-video-filename").textContent = `Attached: ${file.name}`;
+    updateAdminProjectVideoPreview();
     showToast(`🎬 Video attached: ${file.name}`);
   };
   reader.readAsDataURL(file);
+};
+
+window.removeAttachedVideoFile = function() {
+  currentProjectVideoFile = "";
+  const fnEl = document.getElementById("proj-video-filename");
+  if (fnEl) fnEl.textContent = "";
+  const fileInput = document.getElementById("proj-video-file-input");
+  if (fileInput) fileInput.value = "";
+  updateAdminProjectVideoPreview();
+  showToast("🗑️ Attached video file removed.");
+};
+
+window.useYouTubeThumbnailAsCover = function() {
+  const urlInput = document.getElementById("proj-input-video");
+  if (!urlInput) return;
+  const url = urlInput.value.trim();
+  const videoId = (url && window.YouTubeHelper) ? window.YouTubeHelper.extractVideoId(url) : null;
+  if (!videoId) {
+    showToast("⚠️ Please enter a valid YouTube video link first.");
+    return;
+  }
+  const thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  currentThumbnailImage = thumbUrl;
+  if (!currentProjectImages.includes(thumbUrl)) {
+    currentProjectImages.unshift(thumbUrl);
+  }
+  renderProjectImagesPreview();
+  showToast("📸 High-Res YouTube thumbnail set as project cover!");
+};
+
+window.updateAdminProjectVideoPreview = function() {
+  const previewBox = document.getElementById("proj-video-preview-box");
+  if (!previewBox) return;
+
+  const urlInput = document.getElementById("proj-input-video");
+  const url = urlInput ? urlInput.value.trim() : "";
+  const hasFile = Boolean(currentProjectVideoFile && currentProjectVideoFile.length > 0);
+  const videoId = (url && window.YouTubeHelper) ? window.YouTubeHelper.extractVideoId(url) : null;
+
+  const removeBtn = document.getElementById("btn-remove-video-file");
+  if (removeBtn) {
+    removeBtn.style.display = hasFile ? "inline-flex" : "none";
+  }
+
+  if (videoId) {
+    previewBox.style.display = "block";
+    previewBox.innerHTML = `
+      <div style="margin-top:0.8rem; padding:0.8rem; background:rgba(6,182,212,0.06); border:1px solid rgba(6,182,212,0.3); border-radius:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.5rem;">
+          <span style="font-size:0.82rem; font-weight:700; color:var(--accent-cyan);">
+            ✅ YouTube Video Connected (ID: <code>${videoId}</code>)
+          </span>
+          <button type="button" class="btn-admin btn-admin-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="useYouTubeThumbnailAsCover()">
+            📸 Use YouTube Thumbnail as Cover
+          </button>
+        </div>
+        <div style="aspect-ratio:16/9; width:100%; border-radius:8px; overflow:hidden; background:#000;">
+          ${window.YouTubeHelper.createIframeHtml(url, "Preview Video", { autoplay: 0, controls: true })}
+        </div>
+        <p style="font-size:0.75rem; color:var(--text-dim); margin-top:0.4rem;">
+          💡 Works with watch links, youtu.be, shorts, and embed URLs automatically!
+        </p>
+      </div>
+    `;
+  } else if (hasFile) {
+    previewBox.style.display = "block";
+    previewBox.innerHTML = `
+      <div style="margin-top:0.8rem; padding:0.8rem; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.3); border-radius:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+          <span style="font-size:0.82rem; font-weight:700; color:var(--accent-violet);">📁 Attached Local Video File</span>
+          <button type="button" class="btn-admin btn-admin-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem; color:#ef4444;" onclick="removeAttachedVideoFile()">❌ Remove File</button>
+        </div>
+        <div style="aspect-ratio:16/9; width:100%; border-radius:8px; overflow:hidden; background:#000;">
+          <video src="${currentProjectVideoFile}" controls style="width:100%; height:100%; object-fit:contain;"></video>
+        </div>
+      </div>
+    `;
+  } else if (url.length > 0) {
+    previewBox.style.display = "block";
+    previewBox.innerHTML = `
+      <div style="margin-top:0.8rem; padding:0.6rem; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:10px; font-size:0.8rem; color:#fca5a5;">
+        ⚠️ Unrecognized link. Enter a YouTube URL (e.g. <code>https://youtube.com/watch?v=...</code> or <code>https://youtu.be/...</code> or <code>https://youtube.com/shorts/...</code>)
+      </div>
+    `;
+  } else {
+    previewBox.style.display = "none";
+    previewBox.innerHTML = "";
+  }
+};
+
+window.updateHubFeaturedVideoPreview = function() {
+  const previewBox = document.getElementById("hub-yt-video-preview");
+  if (!previewBox) return;
+
+  const input = document.getElementById("hub-yt-video");
+  const val = input ? input.value.trim() : "";
+  const videoId = (val && window.YouTubeHelper) ? window.YouTubeHelper.extractVideoId(val) : null;
+
+  if (videoId) {
+    previewBox.style.display = "block";
+    previewBox.innerHTML = `
+      <div style="margin-top:0.8rem; padding:0.8rem; background:rgba(255,0,0,0.06); border:1px solid rgba(255,0,0,0.3); border-radius:12px;">
+        <div style="font-size:0.82rem; font-weight:700; color:#ff4444; margin-bottom:0.5rem;">
+          📺 YouTube Showcase Player Live Preview (ID: <code>${videoId}</code>)
+        </div>
+        <div style="aspect-ratio:16/9; width:100%; border-radius:8px; overflow:hidden; background:#000;">
+          ${window.YouTubeHelper.createIframeHtml(val, "Featured Preview", { autoplay: 0, controls: true })}
+        </div>
+      </div>
+    `;
+  } else if (val.length > 0) {
+    previewBox.style.display = "block";
+    previewBox.innerHTML = `
+      <div style="margin-top:0.8rem; padding:0.6rem; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:10px; font-size:0.8rem; color:#fca5a5;">
+        ⚠️ Unrecognized link. Enter a YouTube URL (e.g. <code>https://youtube.com/watch?v=...</code> or <code>https://youtu.be/...</code>)
+      </div>
+    `;
+  } else {
+    previewBox.style.display = "none";
+    previewBox.innerHTML = "";
+  }
 };
 
 window.addImageFromUrl = function() {
@@ -1115,15 +1265,24 @@ window.handleSaveProject = function(event) {
   };
 
   const duration = document.getElementById("proj-input-duration").value.trim();
-  const videoUrl = document.getElementById("proj-input-video").value.trim();
+  let videoUrl = document.getElementById("proj-input-video").value.trim();
+  if (videoUrl && window.YouTubeHelper) {
+    const embed = window.YouTubeHelper.getEmbedUrl(videoUrl);
+    if (embed) {
+      videoUrl = embed;
+    }
+  }
+
   const client = document.getElementById("proj-input-client").value.trim();
   const tools = document.getElementById("proj-input-tools").value;
   const tags = document.getElementById("proj-input-tags").value;
   const description = document.getElementById("proj-input-desc").value.trim();
 
+  // If no custom image was provided but YouTube link exists, use YouTube HD thumbnail as cover!
+  let autoThumb = (videoUrl && window.YouTubeHelper) ? window.YouTubeHelper.getThumbnailUrl(videoUrl, "maxresdefault") : "";
   const finalImages = currentProjectImages.length > 0 
     ? currentProjectImages 
-    : ["assets/images/project_placeholder.svg"];
+    : (autoThumb ? [autoThumb] : ["assets/images/project_placeholder.svg"]);
   const finalThumb = currentThumbnailImage || finalImages[0];
 
   const projectPayload = {
@@ -1279,6 +1438,10 @@ function loadProfileFormData(profile, socialHub) {
     document.getElementById("hub-yt-url").value = socialHub.youtubeUrl || (profile && profile.socials && profile.socials.youtube) || "";
     document.getElementById("hub-yt-subs").value = socialHub.subscribersCount || "10K+";
     document.getElementById("hub-yt-video").value = socialHub.featuredVideoEmbed || "";
+    // Load toggle state (default to true if not set)
+    const toggle = document.getElementById("hub-show-youtube-toggle");
+    if (toggle) toggle.checked = socialHub.showYouTubeHub !== false;
+    updateHubFeaturedVideoPreview();
   }
 }
 
@@ -1389,12 +1552,23 @@ window.handleSaveProfile = function(event) {
     customSocials
   };
 
+  let featVideo = getVal("hub-yt-video");
+  if (featVideo && window.YouTubeHelper) {
+    const embed = window.YouTubeHelper.getEmbedUrl(featVideo, { autoplay: 0 });
+    if (embed) {
+      featVideo = embed;
+    }
+  }
+
+  const showYouTubeHub = document.getElementById("hub-show-youtube-toggle")?.checked !== false;
+
   const socialHubUpdates = {
+    showYouTubeHub,
     youtubeTitle: getVal("hub-yt-title"),
     youtubeHandle: getVal("hub-yt-handle"),
     youtubeUrl: ytVal,
     subscribersCount: getVal("hub-yt-subs"),
-    featuredVideoEmbed: getVal("hub-yt-video"),
+    featuredVideoEmbed: featVideo,
     instagramUrl: instaVal,
     behanceUrl: beVal,
     dribbbleUrl: drVal,
@@ -1404,6 +1578,14 @@ window.handleSaveProfile = function(event) {
   window.PortfolioData.updateProfile(profileUpdates);
   window.PortfolioData.updateSocialHub(socialHubUpdates);
   showToast("💾 Profile, Stats & Social Hub saved!");
+};
+
+/**
+ * Instantly toggle YouTube Hub visibility on portfolio site via the admin toggle.
+ */
+window.handleYouTubeHubToggle = function(checked) {
+  window.PortfolioData.updateSocialHub({ showYouTubeHub: checked });
+  showToast(checked ? "📺 YouTube Hub section is now VISIBLE on your site!" : "🚫 YouTube Hub section is now HIDDEN from your site.");
 };
 
 /* ==========================================================================
@@ -1570,6 +1752,9 @@ window.checkSupabaseStatus = async function() {
   const topbarBadge = document.getElementById("topbar-cloud-status");
   const mobileDot = document.getElementById("mobile-cloud-status-dot");
   const panelPill = document.getElementById("supabase-panel-status-pill");
+  const sidebarWidget = document.getElementById("sidebar-cloud-widget");
+  const sidebarText = document.getElementById("sidebar-cloud-status-text");
+  const sidebarDot = document.getElementById("sidebar-cloud-status-dot");
   const urlInput = document.getElementById("cfg-supabase-url");
   const keyInput = document.getElementById("cfg-supabase-key");
 
@@ -1591,6 +1776,12 @@ window.checkSupabaseStatus = async function() {
       mobileDot.style.background = "#f59e0b";
       mobileDot.title = "Supabase Not Configured (Offline Mode)";
     }
+    if (sidebarWidget) sidebarWidget.className = "sidebar-cloud-btn offline";
+    if (sidebarText) {
+      sidebarText.textContent = "Offline Mode";
+      sidebarText.style.color = "#f59e0b";
+    }
+    if (sidebarDot) sidebarDot.style.background = "#f59e0b";
     if (panelPill) {
       panelPill.className = "cloud-status-pill offline";
       panelPill.textContent = "Offline / Local Mode";
@@ -1602,6 +1793,11 @@ window.checkSupabaseStatus = async function() {
     topbarBadge.className = "cloud-status-badge";
     topbarBadge.innerHTML = `<span class="status-dot"></span> <span class="status-text">Checking Supabase...</span>`;
   }
+  if (sidebarText) {
+    sidebarText.textContent = "Checking...";
+    sidebarText.style.color = "#94a3b8";
+  }
+  if (sidebarDot) sidebarDot.style.background = "#94a3b8";
 
   // Test live connection
   if (typeof window.testSupabaseConnection === "function") {
@@ -1615,6 +1811,12 @@ window.checkSupabaseStatus = async function() {
         mobileDot.style.background = "#10b981";
         mobileDot.title = "Supabase Live Connected";
       }
+      if (sidebarWidget) sidebarWidget.className = "sidebar-cloud-btn connected";
+      if (sidebarText) {
+        sidebarText.textContent = "🟢 Live Connected";
+        sidebarText.style.color = "#10b981";
+      }
+      if (sidebarDot) sidebarDot.style.background = "#10b981";
       if (panelPill) {
         panelPill.className = "cloud-status-pill connected";
         panelPill.textContent = "🟢 Live Connected";
@@ -1628,6 +1830,12 @@ window.checkSupabaseStatus = async function() {
         mobileDot.style.background = "#ef4444";
         mobileDot.title = "Supabase Connection Error";
       }
+      if (sidebarWidget) sidebarWidget.className = "sidebar-cloud-btn error";
+      if (sidebarText) {
+        sidebarText.textContent = "🔴 Sync Error";
+        sidebarText.style.color = "#ef4444";
+      }
+      if (sidebarDot) sidebarDot.style.background = "#ef4444";
       if (panelPill) {
         panelPill.className = "cloud-status-pill offline";
         panelPill.textContent = "🔴 Connection Error";

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Rammohan Murmu | Creative Graphic &amp; Web Designer | Video Editor</title>
   <meta name="description" content="Portfolio of Rammohan Murmu - Creative Graphics Designer, UI/UX & Web Designer, and Cinematic Video Editor. Specializing in high-impact brand identities, modern 3D websites, viral thumbnails, and cinematic video editing.">
   <meta name="keywords" content="Rammohan Murmu, Graphic Designer, Video Editor, Web Designer, UI/UX Designer, Thumbnails, Posters, India, Portfolio, 3D Web, Branding, Figma, Photoshop, Premiere Pro">
@@ -17,24 +18,25 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/images/avatar.svg">
 
-  <!-- CSS Stylesheet (Cache Busting v2.5) -->
-  <link rel="stylesheet" href="css/style.css?v=2.5">
+  <!-- CSS Stylesheet (Cache Busting v3.0) -->
+  <link rel="stylesheet" href="css/style.css?v=3.0">
 </head>
 <body class="splash-locked">
 
   <!-- ==========================================================================
-       SPLASH SCREEN / PRELOADER (100% LOADING WITH LOGO)
+       SPLASH SCREEN / PRELOADER (100% LOADING WITH AVATAR / LOGO)
        ========================================================================== -->
   <div id="splash-screen" class="splash-screen">
     <div class="splash-content">
-      <div class="splash-logo-box">
-        <div class="splash-logo-badge">RM</div>
+      <div class="splash-logo-box" id="splash-logo-box">
+        <img id="splash-avatar-img" class="splash-avatar-img" alt="Profile Avatar" style="display: none;">
+        <div class="splash-logo-badge" id="splash-logo-badge">RM</div>
         <div class="splash-logo-glow"></div>
       </div>
       <h2 class="splash-title">
-        <span class="gradient-text">Rammohan Murmu</span>
+        <span class="gradient-text" id="splash-profile-name">Rammohan Murmu</span>
       </h2>
-      <p class="splash-subtitle">Crafting Visuals • 3D Web • Cinematic Motion</p>
+      <p class="splash-subtitle" id="splash-profile-subtitle">Crafting Visuals • 3D Web • Cinematic Motion</p>
       
       <div class="splash-progress-container">
         <div class="splash-progress-bar" id="splash-progress-bar"></div>
@@ -72,6 +74,7 @@
         <li><a href="#portfolio">Works</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#social-hub">YouTube</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
 
@@ -107,12 +110,12 @@
         <li><a href="#portfolio" onclick="closeMobileMenu()"><span>🎨</span> Works</a></li>
         <li><a href="#skills" onclick="closeMobileMenu()"><span>🚀</span> Skills</a></li>
         <li><a href="#testimonials" onclick="closeMobileMenu()"><span>⭐</span> Reviews</a></li>
+        <li><a href="#social-hub" onclick="closeMobileMenu()" id="drawer-youtube-hub-link"><span>📺</span> YouTube Hub</a></li>
         <li><a href="#contact" onclick="closeMobileMenu()"><span>✉️</span> Contact</a></li>
       </ul>
-    </div>
 
-    <div>
-      <button class="btn-primary btn-whatsapp" style="width: 100%;" onclick="openWhatsAppModal(); closeMobileMenu();">
+      <!-- WhatsApp CTA placed here so it's always visible -->
+      <button class="btn-primary btn-whatsapp" style="width: 100%; margin-top: 2rem;" onclick="openWhatsAppModal(); closeMobileMenu();">
         <span>💬 Instant WhatsApp</span>
       </button>
     </div>
@@ -436,6 +439,47 @@
   </section>
 
   <!-- ==========================================================================
+       YOUTUBE CHANNEL SHOWCASE & SOCIAL MEDIA HUB SECTION
+       ========================================================================== -->
+  <section id="social-hub" style="background: rgba(8, 10, 15, 0.75);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">📺 Creator Channel &amp; Hub</span>
+        <h2 class="section-title">YouTube Showcase &amp; <span class="highlight-text">Social Hub</span></h2>
+        <p class="section-desc">Subscribe to the official channel for design breakdowns, motion graphics, and behind-the-scenes showreels.</p>
+      </div>
+
+      <div class="social-hub-container">
+        <!-- YouTube Channel Showcase -->
+        <div class="youtube-channel-showcase">
+          <div class="youtube-header-bar">
+            <div class="youtube-profile-info">
+              <div class="youtube-avatar-box">
+                <img id="hub-yt-avatar" src="assets/images/avatar.svg" alt="Rammohan Murmu">
+              </div>
+              <div class="youtube-meta-text">
+                <h3 id="hub-yt-channel-name">Rammohan Murmu - Creative Studio <span style="color: #ff0000; font-size: 0.95rem;">▶</span></h3>
+                <p id="hub-yt-sub-meta"><span id="hub-yt-handle-display">@rammohanmurmu_design</span> • <span id="hub-yt-subs-display">15.4K+</span> subscribers</p>
+              </div>
+            </div>
+            <a href="https://www.youtube.com/@rammohanmurmu" target="_blank" rel="noopener noreferrer" class="youtube-sub-btn" id="hub-yt-sub-btn">
+              <span>▶ Subscribe</span>
+            </a>
+          </div>
+          <div class="youtube-video-frame" id="hub-yt-video-frame">
+            <!-- Rendered dynamically via js/main.js -->
+          </div>
+        </div>
+
+        <!-- Social Grid Cards -->
+        <div class="social-hub-cards-grid" id="hub-social-cards-grid">
+          <!-- Rendered dynamically via js/main.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
        CONTACT & WHATSAPP SECTION
        ========================================================================== -->
   <section id="contact">
@@ -638,7 +682,12 @@
        ========================================================================== -->
   <div class="modal-backdrop" id="project-modal" onclick="closeModalOnBackdrop(event, 'project-modal')">
     <div class="modal-box">
-      <button class="modal-close-btn" onclick="closeModal('project-modal')">✕</button>
+      <button class="modal-close-btn" onclick="closeModal('project-modal')" aria-label="Close Project Modal" title="Close (Esc)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
       
       <!-- Main Media Box (Image / Video Player) -->
       <div class="lightbox-media-box" id="modal-media-container">
@@ -693,7 +742,12 @@
        ========================================================================== -->
   <div class="modal-backdrop" id="whatsapp-modal" onclick="closeModalOnBackdrop(event, 'whatsapp-modal')">
     <div class="modal-box" style="max-width: 580px;">
-      <button class="modal-close-btn" onclick="closeModal('whatsapp-modal')">✕</button>
+      <button class="modal-close-btn" onclick="closeModal('whatsapp-modal')" aria-label="Close WhatsApp Modal" title="Close (Esc)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
       
       <div class="wa-inquiry-box">
         <div style="text-align: center; margin-bottom: 2rem;">
@@ -744,10 +798,10 @@
 
   <!-- Supabase Cloud SDK & Configuration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=2.5"></script>
+  <script src="js/supabase-config.js?v=3.0"></script>
 
-  <!-- JavaScript Modules (Cache Busting v2.5) -->
-  <script src="js/data.js?v=2.5"></script>
-  <script src="js/main.js?v=2.5"></script>
+  <!-- JavaScript Modules (Cache Busting v3.0) -->
+  <script src="js/data.js?v=3.0"></script>
+  <script src="js/main.js?v=3.0"></script>
 </body>
 </html>

@@ -78,11 +78,12 @@ const DEFAULT_PORTFOLIO_DATA = {
     customSocials: []
   },
   socialHub: {
+    showYouTubeHub: true,
     youtubeTitle: "Rammohan Murmu - Creative Studio",
     youtubeHandle: "@rammohanmurmu_design",
     youtubeUrl: "https://www.youtube.com/@rammohanmurmu",
-    subscribersCount: "10K+",
-    featuredVideoEmbed: "",
+    subscribersCount: "15.4K+",
+    featuredVideoEmbed: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     featuredVideoTitle: "Showreel 2026: 3D Branding & Cinematic Motion Editing",
     instagramHandle: "@rammohan_creates",
     instagramUrl: "https://www.instagram.com/",
@@ -105,6 +106,94 @@ const DEFAULT_PORTFOLIO_DATA = {
 };
 
 const STORAGE_KEY = "rammohan_murmu_portfolio_data_v4";
+
+// ==========================================================================
+// UNIVERSAL YOUTUBE PARSER & EMBED ENGINE
+// Handles all YouTube formats: watch, youtu.be, shorts, live, embed, iframe, etc.
+// ==========================================================================
+window.YouTubeHelper = {
+  extractVideoId(input) {
+    if (!input || typeof input !== "string") return null;
+    let str = input.trim();
+
+    // 1. If raw <iframe> code was pasted, extract src
+    if (str.includes("<iframe") && str.includes("src=")) {
+      const srcMatch = str.match(/src=["']([^"']+)["']/i);
+      if (srcMatch && srcMatch[1]) {
+        str = srcMatch[1].trim();
+      }
+    }
+
+    // 2. Direct 11-char video ID check (alphanumeric, -, _)
+    if (/^[a-zA-Z0-9_-]{11}$/.test(str)) {
+      return str;
+    }
+
+    // 3. Primary regex matching all standard YouTube URLs:
+    // - youtube.com/watch?v=ID or youtube.com/watch?...&v=ID
+    // - youtu.be/ID
+    // - youtube.com/embed/ID
+    // - youtube.com/shorts/ID
+    // - youtube.com/live/ID
+    // - youtube.com/v/ID
+    // - m.youtube.com/...
+    // - youtube-nocookie.com/...
+    const regExp = /(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|shorts\/|live\/|watch\?(?:.*&)?v=))([a-zA-Z0-9_-]{11})/i;
+    const match = str.match(regExp);
+    if (match && match[1]) {
+      return match[1];
+    }
+
+    // 4. Secondary fallback: query param ?v= or &v= anywhere in string
+    const vParamMatch = str.match(/[?&]v=([a-zA-Z0-9_-]{11})/i);
+    if (vParamMatch && vParamMatch[1]) {
+      return vParamMatch[1];
+    }
+
+    return null;
+  },
+
+  getEmbedUrl(input, options = {}) {
+    const videoId = this.extractVideoId(input);
+    if (!videoId) return null;
+
+    const autoplay = options.autoplay ? "1" : "0";
+    const mute = options.mute ? "1" : "0";
+    const controls = options.controls === false ? "0" : "1";
+    const loop = options.loop ? `1&playlist=${videoId}` : "0";
+
+    // Safe origin calculation to prevent YouTube Error 153 (Video player configuration error)
+    let originParam = "";
+    try {
+      if (typeof window !== "undefined" && window.location && window.location.origin && window.location.origin !== "null" && !window.location.origin.startsWith("file:")) {
+        originParam = `&origin=${encodeURIComponent(window.location.origin)}`;
+      }
+    } catch (e) {}
+
+    return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=${autoplay}&mute=${mute}&controls=${controls}&loop=${loop}&rel=0&modestbranding=1&playsinline=1&enablejsapi=1${originParam}`;
+  },
+
+  getThumbnailUrl(input, quality = "hqdefault") {
+    const videoId = this.extractVideoId(input);
+    if (!videoId) return null;
+    return `https://img.youtube.com/vi/${videoId}/${quality}.jpg`;
+  },
+
+  createIframeHtml(input, title = "YouTube Video", options = {}) {
+    const embedUrl = this.getEmbedUrl(input, options);
+    if (!embedUrl) return "";
+
+    const escapedTitle = (title || "YouTube Video").replace(/"/g, '&quot;');
+    return `<iframe 
+      src="${embedUrl}" 
+      title="${escapedTitle}" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+      referrerpolicy="strict-origin-when-cross-origin" 
+      allowfullscreen 
+      style="width: 100%; height: 100%; border: none; display: block;">
+    </iframe>`;
+  }
+};
 
 // Central Data Store Interface
 window.PortfolioData = {
